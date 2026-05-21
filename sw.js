@@ -1,6 +1,6 @@
 // MSM Companion — Service Worker
 // Bump CACHE_NAME when you deploy new code so users get the update.
-const CACHE_NAME = 'msm-v2';
+const CACHE_NAME = 'msm-__BUILD_TIME__';
 
 // Files to pre-cache on install (the app shell)
 const PRECACHE = ['/', '/index.html', '/data.js', '/manifest.json'];
