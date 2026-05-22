@@ -60,6 +60,7 @@ select:focus,input:focus{border-color:var(--acc)}
 .rbtn.on-C{background:rgba(63,185,80,.18);border-color:var(--com);color:var(--com)}
 .rbtn.on-R{background:rgba(88,166,255,.18);border-color:var(--rar);color:var(--rar)}
 .rbtn.on-E{background:rgba(210,153,34,.18);border-color:var(--epi);color:var(--epi)}
+.rbtn.on{background:rgba(157,95,244,.18);border-color:var(--acc2);color:var(--acc2)}
 .bdg{font-size:10px;font-weight:600;padding:1px 5px;border-radius:4px;display:inline-block}
 .bdg-C{background:rgba(63,185,80,.18);color:var(--com)}
 .bdg-R{background:rgba(88,166,255,.18);color:var(--rar)}
@@ -210,7 +211,7 @@ input[type=file]{display:none}
   nav button.on{color:var(--acc2);border-top-color:var(--acc2);border-bottom-color:transparent !important}
   nav button:hover{color:var(--tx)}
 
-  /* No emoji icons — labels are clear enough at the bottom tab bar */
+  /* No emoji icons — text labels are clear enough in the bottom tab bar */
 
   /* ── MAIN LAYOUT ── */
   main{overflow:visible}
@@ -304,51 +305,50 @@ input[type=file]{display:none}
   #availAddModal .frow select,#availAddModal .frow input{width:100% !important;max-width:none !important}
 }
 
-/* ── AVAILABLE-TAB card (orange accent, distinct from owned/green) ── */
+/* ── AVAILABLE-TAB card (orange accent) ── */
 .mc.avail-card{border-color:#FF8C00;background:rgba(255,140,0,.07)}
 .mc.avail-card:hover{background:rgba(255,140,0,.12)}
 
-/* ── Sidebar section separator label ── */
+/* ── Sidebar section separator ── */
 .sb-sep{padding:5px 13px 3px;font-size:10px;font-weight:700;color:var(--tx3);
   text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;flex-shrink:0}
 @media (max-width:768px){.sb-sep{padding:5px 10px 3px}}
 
-/* ── Needed-toggle star button on collection cards ── */
-.mc-need-btn{
-  position:absolute;top:4px;right:26px;
-  background:none;border:none;cursor:pointer;
-  font-size:15px;padding:3px;line-height:1;
-  color:var(--tx3);transition:color .12s;
-}
+/* ── Needed-toggle star on collection cards ── */
+.mc-need-btn{position:absolute;top:4px;right:26px;background:none;border:none;cursor:pointer;
+  font-size:15px;padding:3px;line-height:1;color:var(--tx3);transition:color .12s}
 .mc-need-btn:hover{color:var(--epi)}
 .mc.needed .mc-need-btn{color:var(--epi)}
+.mc.wneed .mc-need-btn{color:#56b4e9}
 
-/* ── Sidebar item with count badge ── */
+/* ── Collection sidebar item with count badge ── */
 .sbi-inner{display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px;min-width:0}
 .sbi-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sbi-cnt{flex-shrink:0;font-size:10px;background:var(--bg4);color:var(--tx3);
-  padding:1px 5px;border-radius:10px;font-weight:600}
+  padding:1px 5px;border-radius:10px;font-weight:600;white-space:nowrap}
 .sbi.on .sbi-cnt{background:var(--acl);color:var(--acc2)}
 @media (max-width:768px){.sbi-inner{gap:4px}.sbi-cnt{font-size:9px}}
 
 /* ── Collection progress bar ── */
-.col-prog{margin:0 0 14px}
-.col-prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:11px;color:var(--tx3)}
-.col-prog-top strong{color:var(--tx);font-size:13px}
-.col-prog .pbar{height:7px}
+.col-prog{margin:-2px 0 14px}
+.col-prog .pbar{height:6px}
 .col-prog .pfill{background:var(--acc2)}
 .col-prog .pfill.done{background:var(--com)}
 
-/* ── Stat card with colored left accent ── */
+/* ── Stat card accent borders ── */
 .sc.sc-owned{border-left:3px solid var(--com)}
 .sc.sc-need{border-left:3px solid var(--epi)}
 
-/* ── Table header polish ── */
+/* ── Table header bottom border ── */
 th{border-bottom:1px solid var(--brd2)}
 
-/* ── Drag handle ── */
-.drag-handle-inner{display:flex;flex-direction:column;gap:2px;padding:2px 0}
-.drag-handle-inner span{display:block;width:14px;height:2px;background:var(--tx3);border-radius:1px}
+/* ── Drag handle (CSS bars) ── */
+.drag-handle-inner{display:flex;flex-direction:column;gap:3px;padding:3px 1px}
+.drag-handle-inner span{display:block;width:14px;height:2px;background:currentColor;border-radius:1px;opacity:.55}
+
+/* ── Breeding Needed filter: missing-island tags ── */
+.miss-tag{display:inline-block;font-size:10px;background:rgba(248,81,73,.1);
+  color:#f87171;padding:1px 5px;border-radius:4px;margin:1px}
 </style>
 </head>
 <body>
@@ -452,26 +452,70 @@ var S = {
   colIsland:"Plant Island", colRarity:"", colHideOwned:false, colNeedOnly:false,
   brIsland:"Plant Island", brRarity:"", brHideOwned:false, brBreedOnly:false, brSearch:"",
   wbIsland:"Plant Island", wbType:"common",
-  dbSearch:"", dbRarity:"", dbClass:"", dbElem:"", dbIsland:"",
+  dbSearch:"", dbRarity:"", dbClass:"", dbElem:"", dbIsland:"", dbStatus:"",
   islandSel:"Plant Island",
   avSearch:"", avRarity:"", avClass:"",
-  owned:{}, needed:{}, zapTracked:{}, wubboxBoxed:{}, islandImages:{}, wubNeeded:{}, zapOrder:{},
+  owned:{}, needed:{}, zapTracked:{}, wubboxBoxed:{}, wubNeeded:{}, zapOrder:{},
   avail:{}
 };
-function loadS(){try{var r=localStorage.getItem("msm4");if(r)Object.assign(S,JSON.parse(r));}catch(e){}}
+// Tab migration: old 8-tab layout (with Breeding=1) -> new 7-tab layout (Breeding removed)
+// Old: Collection=0 Breeding=1 Zapping=2 Wubbox=3 Available=4 Database=5 Islands=6 SaveLoad=7
+// New: Collection=0 Zapping=1  Wubbox=2  Available=3 Database=4 Islands=5  SaveLoad=6
+var _TAB_MIG=[0,0,1,2,3,4,5,6];
+function loadS(){
+  try{
+    var r=localStorage.getItem("msm4");
+    if(r){
+      var parsed=JSON.parse(r);
+      // Remap tab index from old layout
+      if(typeof parsed.tab==="number"&&parsed.tab>=0&&parsed.tab<=7)
+        parsed.tab=_TAB_MIG[parsed.tab];
+      // Migrate island images out of the main state blob into per-island keys
+      if(parsed.islandImages){
+        Object.keys(parsed.islandImages).forEach(function(nm){
+          var d=parsed.islandImages[nm];
+          if(d){try{localStorage.setItem("msm4_img_"+nm,d);}catch(ex){}}
+        });
+        delete parsed.islandImages;
+      }
+      Object.assign(S,parsed);
+    }
+  }catch(e){}
+}
 function saveS(){
   try{
-    var snap=JSON.parse(JSON.stringify(S));
-    delete snap.islandImages; // images live in dedicated keys via persistIslandImage
+    var snap=Object.assign({},S);
+    delete snap.islandImages; // safety guard — never write image blobs into main blob
     localStorage.setItem("msm4",JSON.stringify(snap));
   }catch(e){}
   if(typeof scheduleSyncSave==="function")scheduleSyncSave();
+}
+// Per-island image helpers (separate localStorage keys to avoid quota issues)
+function loadIslandImg(name){try{return localStorage.getItem("msm4_img_"+name)||null;}catch(e){return null;}}
+function saveIslandImg(name,dataUrl){
+  try{localStorage.setItem("msm4_img_"+name,dataUrl);}
+  catch(e){alert("Image still too large after compression. Try a smaller file.");}
+}
+function removeIslandImg(name){try{localStorage.removeItem("msm4_img_"+name);}catch(e){}}
+// Compress an image data-URL: scales to maxPx on the longest side, exports as JPEG at given quality.
+// Calls callback(compressedDataUrl) when done.
+function compressImg(dataUrl,maxPx,quality,callback){
+  var img=new Image();
+  img.onload=function(){
+    var w=img.width,h=img.height;
+    if(w>maxPx||h>maxPx){var sc=maxPx/Math.max(w,h);w=Math.round(w*sc);h=Math.round(h*sc);}
+    var cv=document.createElement("canvas");cv.width=w;cv.height=h;
+    cv.getContext("2d").drawImage(img,0,0,w,h);
+    callback(cv.toDataURL("image/jpeg",quality));
+  };
+  img.onerror=function(){callback(dataUrl);};// fallback: save original
+  img.src=dataUrl;
 }
 var _drt=null;
 function debounceRender(){clearTimeout(_drt);_drt=setTimeout(renderAll,150);}
 
 // TABS
-var TABS=["Collection","Breeding","Zapping","Wubbox","Available","Database","Islands","Save / Load"];
+var TABS=["Collection","Zapping","Wubbox","Available","Database","Islands","Save / Load"];
 function initNav(){
   var nav=document.getElementById("nav");
   TABS.forEach(function(t,i){
@@ -488,7 +532,9 @@ function renderAll(){
   if(focused&&focused.tagName==="INPUT"&&focused.id)_focusId=focused.id;
   setNavActive();
   document.getElementById("main").innerHTML="";
-  [renderCollection,renderBreeding,renderZapping,renderWubbox,renderAvailable,renderDatabase,renderIslands,renderSaveLoad][S.tab]();
+  var _tabs=[renderCollection,renderZapping,renderWubbox,renderAvailable,renderDatabase,renderIslands,renderSaveLoad];
+  if(S.tab<0||S.tab>=_tabs.length)S.tab=0;
+  _tabs[S.tab]();
   if(_focusId){
     var el=document.getElementById(_focusId);
     if(el){el.focus();var v=el.value;el.value="";el.value=v;}
@@ -560,6 +606,24 @@ function wubNeededFor(monsterName){
     if(p.length<3)return;
     if(cleanN(p[2]).toLowerCase()===clean)
       res.push(p[0]+" ("+p[1].charAt(0).toUpperCase()+p[1].slice(1)+" Wubbox)");
+  });
+  return res;
+}
+// Returns array of {island,type,name} for all wubbox slots that contain this monster but are NOT yet boxed
+function wubboxUnboxedFor(monsterName){
+  var clean=cleanN(monsterName).toLowerCase();
+  var res=[];
+  Object.keys(DB.wubbox||{}).forEach(function(island){
+    var wd=DB.wubbox[island]||{};
+    ["common","rare","epic"].forEach(function(type){
+      var bList=wd[type]||[];
+      var bkey=island+"__"+type;
+      var boxed=(S.wubboxBoxed&&S.wubboxBoxed[bkey])||{};
+      bList.forEach(function(mn){
+        if(cleanN(mn).toLowerCase()===clean&&!boxed[mn])
+          res.push({island:island,type:type,name:mn});
+      });
+    });
   });
   return res;
 }
@@ -638,30 +702,6 @@ function elemImg(el){
   return '<img src="images/elements/'+el.toLowerCase()+'.png" class="esig" onerror="this.style.opacity=0" alt="'+el+'" title="'+el+'">';
 }
 
-// ISLAND IMAGE PERSISTENCE
-// Each image lives in its own localStorage key so base64 blobs never bloat the
-// main state key and cause silent quota-exceeded failures on page reload.
-function _imgLsKey(name){return'msm4_img_'+name;}
-function persistIslandImage(name,dataUrl){
-  try{
-    if(dataUrl)localStorage.setItem(_imgLsKey(name),dataUrl);
-    else localStorage.removeItem(_imgLsKey(name));
-  }catch(e){console.warn('Island image save failed (storage full?):',e);}
-}
-function loadIslandImages(){
-  if(!S.islandImages)S.islandImages={};
-  // Primary: pull from dedicated per-island keys
-  ISO.forEach(function(name){
-    var v=localStorage.getItem(_imgLsKey(name));
-    if(v)S.islandImages[name]=v;
-  });
-  // Migration: images previously stored inside the main state key
-  Object.keys(S.islandImages).forEach(function(name){
-    var v=S.islandImages[name];
-    if(v&&!localStorage.getItem(_imgLsKey(name)))persistIslandImage(name,v);
-  });
-}
-
 // SIDEBAR
 function makeSidebar(activeKey,onClickFn){
   var sb=document.createElement("div");sb.className="sb";
@@ -710,18 +750,17 @@ document.getElementById("zm_island").addEventListener("change",function(){zmFill
 
 // COLLECTION
 function renderCollection(){
-  // Build sidebar with owned/total counts per island
+  // Sidebar with owned/total count badge per island
   var sb=document.createElement("div");sb.className="sb";
   ISO.forEach(function(name){
     if(!DB.islands[name]&&!DB.zapping[name])return;
     var isZapOnly=!!DB.zapping[name]&&!DB.islands[name];
     var mons=isZapOnly?DB.zapping[name]:getIslandMons(name);
-    var owned=mons.filter(function(m){return isOwned(name,m.n);}).length;
-    var total=mons.length;
-    var pct=total?Math.round(owned/total*100):0;
+    var ownedN=mons.filter(function(m){return isOwned(name,m.n);}).length;
+    var totalN=mons.length;
     var d=document.createElement("div");d.className="sbi"+(S.colIsland===name?" on":"");
     d.innerHTML='<div class="sbi-inner"><span class="sbi-name">'+name+'</span>'+
-      '<span class="sbi-cnt" title="'+owned+'/'+total+' owned ('+pct+'%)">'+owned+'/'+total+'</span></div>';
+      '<span class="sbi-cnt">'+ownedN+'/'+totalN+'</span></div>';
     d.addEventListener("click",function(){S.colIsland=name;saveS();renderAll();});
     sb.appendChild(d);
   });
@@ -731,7 +770,6 @@ function renderCollection(){
   document.getElementById("main").appendChild(wrap);
 
   var key=S.colIsland;
-  // Amber has both island (collection) and zapping data - show island data for collection
   var isZap=!!DB.zapping[key]&&!DB.islands[key];
   var allMons=isZap?DB.zapping[key]:getIslandMons(key);
   var ownedCount=allMons.filter(function(m){return isOwned(key,m.n);}).length;
@@ -813,7 +851,7 @@ function renderCollection(){
     grid.appendChild(card);
   });
   c.appendChild(grid);
-  var hint=document.createElement("div");hint.className="hint";hint.textContent="Click = owned  ·  ☆ = mark needed  ·  Shift+click = needed";c.appendChild(hint);
+  var hint=document.createElement("div");hint.className="hint";hint.textContent="Click = owned  ·  ☆ or Shift+click = mark needed";c.appendChild(hint);
 }
 
 // BREEDING
@@ -882,7 +920,7 @@ function renderBreeding(){
       addMonItem(m,(m.islands||[]).filter(function(a){return a.combo&&a.combo.length;}),{});
     });
   } else if(key==="NEEDED"){
-    // Auto-populate: explicitly marked + pending zap eggs + wubbox needed
+    // Auto-compute: not owned on islands where breedable + pending zap eggs + wubbox needed
     var zapEggMapN={};
     Object.values(S.zapTracked||{}).forEach(function(z){
       var eggs=parseEggs(z.eggs_required||"");
@@ -904,12 +942,15 @@ function renderBreeding(){
     });
     DB.monsters.forEach(function(m){
       var legN=m.n+" ("+m.r+")";
-      var isExplicit=(m.islands||[]).some(function(a){return isNeeded(a.island,legN);});
+      // Islands where this monster can be bred but hasn't been
+      var missingFrom=(m.islands||[]).filter(function(a){
+        return a.combo&&a.combo.length&&!isOwned(a.island,legN);
+      }).map(function(a){return a.island;});
       var zt=zapEggMapN[cleanN(m.n).toLowerCase()];
       var wf=wubMonMapN[cleanN(m.n).toLowerCase()];
-      if(!isExplicit&&!zt&&!wf)return;
+      if(!missingFrom.length&&!zt&&!wf)return;
       var extras={};
-      if(isExplicit)extras._needed=true;
+      if(missingFrom.length)extras._missingIslands=missingFrom;
       if(zt)extras._zapTags=zt;
       if(wf)extras._wubFor=wf.join(", ");
       addMonItem(m,(m.islands||[]).filter(function(a){return a.combo&&a.combo.length;}),extras);
@@ -957,7 +998,10 @@ function renderBreeding(){
     });
   }
 
-  var cnt=document.createElement("div");cnt.className="cnt";cnt.textContent=monItems.length+" monsters";c.appendChild(cnt);
+  var cnt=document.createElement("div");cnt.className="cnt";
+  cnt.textContent=monItems.length+" monster"+(monItems.length!==1?"s":"")+
+    (key==="NEEDED"?" — auto-computed from island progress, zapping & wubbox data":"");
+  c.appendChild(cnt);
   if(!monItems.length){var emp=document.createElement("div");emp.className="empty";emp.textContent="No results.";c.appendChild(emp);return;}
 
   var tw=document.createElement("div");tw.className="twrap";
@@ -977,18 +1021,22 @@ function renderBreeding(){
 
       if(idx===0){
         var wbn=wubNeededFor(m.n);
-        var avKeyBr=m.n+" ("+m.r+")";
-        var isAvBr=isAvailNow(avKeyBr);
         var tdM=document.createElement("td");
         tdM.rowSpan=apps.length;
         tdM.style.verticalAlign="top";
         tdM.style.paddingTop="9px";
+        var missList=item._missingIslands||[];
+        var missHtml="";
+        if(missList.length){
+          var shown=missList.slice(0,3).map(function(isl){return'<span class="miss-tag">'+isl+'</span>';}).join("");
+          var more=missList.length>3?'<span style="font-size:10px;color:var(--tx3)"> +'+( missList.length-3)+' more</span>':"";
+          missHtml='<div style="margin-top:3px">'+shown+more+'</div>';
+        }
         tdM.innerHTML='<div style="display:flex;align-items:flex-start;gap:7px">'+
           monImgWithCtx(m.n,a.island,32)+
           '<div><div style="font-weight:600;font-size:13px">'+cleanN(m.n)+'</div>'+
           '<div style="margin-top:3px">'+bdg(r)+'</div>'+
-          (isAvBr?'<div style="margin-top:2px"><span class="bdg bdg-avail">Available</span></div>':"")+
-          (item._needed?'<div style="margin-top:2px"><span class="bdg bdg-need">Needed</span></div>':"")+
+          missHtml+
           (item._zapTags?'<div style="margin-top:2px">'+item._zapTags.map(function(zt){return'<span class="bdg bdg-zap">Zap: '+zt.name+(zt.still?' ×'+zt.still:'')+'</span>';}).join(" ")+'</div>':"")+
           (item._wubFor?'<div style="margin-top:2px"><span class="bdg bdg-wub">Wubbox</span></div>':"")+
           (wbn.length&&!item._wubFor?'<div style="margin-top:2px"><span class="bdg bdg-wub">Wubbox</span></div>':"")+
@@ -1247,8 +1295,18 @@ function renderWubbox(){
   var sb=document.createElement("div");sb.className="sb";
   ISO.forEach(function(name){
     if(!DB.wubbox[name])return;
+    // Count boxed/total for current type to show in sidebar badge
+    var wd2=DB.wubbox[name]||{};
+    var bList2=wd2[S.wbType]||[];
+    var bk2=name+"__"+S.wbType;
+    if(!S.wubboxBoxed[bk2])S.wubboxBoxed[bk2]={};
+    var bxd2=S.wubboxBoxed[bk2];
+    var boxedN2=bList2.filter(function(mn){return bxd2[mn];}).length;
     var d=document.createElement("div");d.className="sbi"+(S.wbIsland===name?" on":"");
-    d.textContent=name;d.addEventListener("click",function(){S.wbIsland=name;saveS();renderAll();});sb.appendChild(d);
+    d.innerHTML='<div class="sbi-inner"><span class="sbi-name">'+name+'</span>'+
+      '<span class="sbi-cnt">'+boxedN2+'/'+bList2.length+'</span></div>';
+    d.addEventListener("click",function(){S.wbIsland=name;saveS();renderAll();});
+    sb.appendChild(d);
   });
   wrap.appendChild(sb);
   var c=makePanel();wrap.appendChild(c);
@@ -1257,16 +1315,17 @@ function renderWubbox(){
   var key=S.wbIsland;
   var wd=DB.wubbox[key]||{common:[],rare:[],epic:[]};
 
-  var tc=document.createElement("div");tc.className="typbtns";
-  var cols={common:"var(--com)",rare:"var(--rar)",epic:"var(--epi)"};
-  var wbNames={common:"Wubbox",rare:"Rare Wubbox",epic:"Epic Wubbox"};
+  // Type switcher using rbtn style (consistent with rarity buttons elsewhere)
+  var tc=document.createElement("div");tc.className="frow";
+  var wbRarMap={common:"C",rare:"R",epic:"E"};
+  var wbLabels={common:"Common Wubbox",rare:"Rare Wubbox",epic:"Epic Wubbox"};
   ["common","rare","epic"].forEach(function(type){
+    if(!(wd[type]||[]).length)return;
     var b=document.createElement("button");
-    var label=type.charAt(0).toUpperCase()+type.slice(1)+" Wubbox";
-    b.className=S.wbType===type?"btn-pri":"btn";
-    if(S.wbType===type)b.style.cssText="background:"+cols[type]+";border-color:"+cols[type]+";color:#000";
-    b.style.display="flex";b.style.alignItems="center";b.style.gap="6px";
-    b.innerHTML=monImgWithCtx(wbNames[type],key,24)+label;
+    b.className="rbtn"+(S.wbType===type?" on-"+wbRarMap[type]:"");
+    b.style.cssText="display:inline-flex;align-items:center;gap:5px;padding:4px 10px";
+    var wbImgName=type==="epic"?"Epic Wubbox":type==="rare"?"Rare Wubbox":"Wubbox";
+    b.innerHTML=monImgWithCtx(wbImgName,type==="epic"?key:"",22)+"<span>"+wbLabels[type]+"</span>";
     b.addEventListener("click",function(){S.wbType=type;saveS();renderAll();});
     tc.appendChild(b);
   });
@@ -1276,47 +1335,56 @@ function renderWubbox(){
   var bkey=key+"__"+S.wbType;
   if(!S.wubboxBoxed[bkey])S.wubboxBoxed[bkey]={};
   var boxed=S.wubboxBoxed[bkey];
-  var boxedCount=bList.filter(function(m){return boxed[m];}).length;
+  var boxedCount=bList.filter(function(mn){return boxed[mn];}).length;
   var pct=bList.length?Math.round(boxedCount/bList.length*100):0;
 
   var st=document.createElement("div");st.className="stats";
-  st.innerHTML='<div class="sc"><div class="sc-lbl">Boxed</div><div class="sc-val">'+boxedCount+'</div><div class="sc-sub">of '+bList.length+'</div></div>'+
+  st.innerHTML=
+    '<div class="sc sc-owned"><div class="sc-lbl">Boxed</div><div class="sc-val">'+boxedCount+'</div><div class="sc-sub">of '+bList.length+'</div></div>'+
     '<div class="sc"><div class="sc-lbl">Still Needed</div><div class="sc-val">'+(bList.length-boxedCount)+'</div></div>'+
     '<div class="sc"><div class="sc-lbl">Progress</div><div class="sc-val">'+pct+'%</div></div>';
   c.appendChild(st);
 
-  var pg=document.createElement("div");pg.style.cssText="margin:0 0 11px";
-  pg.innerHTML='<div class="pbar" style="height:9px"><div class="pfill'+(pct>=100?" done":"")+'" style="width:'+pct+'%"></div></div>';
+  var pg=document.createElement("div");pg.className="col-prog";
+  pg.innerHTML='<div class="pbar"><div class="pfill'+(pct>=100?" done":"")+'" style="width:'+pct+'%"></div></div>';
   c.appendChild(pg);
 
-  if(!bList.length){var emp=document.createElement("div");emp.className="empty";emp.textContent="No wubbox data.";c.appendChild(emp);return;}
+  if(!bList.length){var emp=document.createElement("div");emp.className="empty";emp.textContent="No wubbox data for this island.";c.appendChild(emp);return;}
 
-  var allBtn=document.createElement("button");allBtn.className="btn-sm";allBtn.style.marginBottom="10px";
+  var actRow=document.createElement("div");actRow.className="frow";
+  var allBtn=document.createElement("button");allBtn.className="btn-sm";
   allBtn.textContent=boxedCount===bList.length?"Unbox All":"Box All";
   allBtn.addEventListener("click",function(){
-    var v=boxedCount!==bList.length;bList.forEach(function(m){boxed[m]=v?1:0;});saveS();renderAll();
+    var v=boxedCount!==bList.length;bList.forEach(function(mn){boxed[mn]=v?1:0;});saveS();renderAll();
   });
-  c.appendChild(allBtn);
+  actRow.appendChild(allBtn);
+  var wbHint=document.createElement("span");wbHint.className="hint";wbHint.style.marginLeft="6px";
+  wbHint.textContent="Click → boxed  \xB7  ★ → needed for breeding";
+  actRow.appendChild(wbHint);
+  c.appendChild(actRow);
 
-  var grid=document.createElement("div");grid.className="wgrid";
+  var grid=document.createElement("div");grid.className="mgrid";
   bList.forEach(function(mn){
     var isBoxed=!!boxed[mn];
     var isNeed=isWubNeeded(key,S.wbType,mn);
-    var wi=document.createElement("div");
-    wi.className="wi"+(isBoxed?" boxed":"")+(isNeed?" wi-need":"");
-    wi.innerHTML='<div class="wichk">'+(isBoxed?"✓":"")+'</div>'+monImgWithCtx(mn,key,28)+
-      '<div style="flex:1;min-width:0">'+
-        '<div style="font-size:12px">'+mn+'</div>'+
-        (isNeed?'<div style="font-size:10px;color:#56b4e9;margin-top:1px">Needed</div>':"")+
-      '</div>'+
-      '<button class="wb-need-btn btn-sm" style="flex-shrink:0;font-size:13px;padding:2px 5px;'+(isNeed?'background:rgba(86,180,233,.2);border-color:#56b4e9;color:#56b4e9':'color:var(--tx3)')+';" title="'+(isNeed?"Unmark":"Mark as")+' needed">★</button>';
-    wi.addEventListener("click",function(e){
-      if(e.target.classList.contains("wb-need-btn")){
+    var card=document.createElement("div");
+    card.className="mc"+(isBoxed?" owned":"")+(isNeed?" wneed":"");
+    card.innerHTML=
+      '<div class="mc-chk">✓</div>'+
+      '<button class="mc-need-btn" title="'+(isNeed?"Unmark":"Mark as")+' needed">'+(isNeed?'★':'☆')+'</button>'+
+      '<div class="mc-top">'+monImgWithCtx(mn,key,42)+
+        '<div class="mc-info">'+
+          '<div class="mc-name">'+mn+'</div>'+
+          (isNeed?'<div style="margin-top:3px"><span class="bdg bdg-wub">Needed</span></div>':"")+
+        '</div>'+
+      '</div>';
+    card.addEventListener("click",function(e){
+      if(e.target.classList.contains("mc-need-btn")||e.target.closest(".mc-need-btn")){
         setWubNeeded(key,S.wbType,mn,!isNeed);renderAll();return;
       }
       boxed[mn]=isBoxed?0:1;saveS();renderAll();
     });
-    grid.appendChild(wi);
+    grid.appendChild(card);
   });
   c.appendChild(grid);
 }
@@ -1468,7 +1536,7 @@ function renderAvailAddList(){
       '<div style="flex:1;min-width:0">'+
         '<span style="font-size:13px;font-weight:500">'+m.n+'</span>'+
         '<span class="bdg bdg-'+r2+'" style="margin-left:5px">'+m.r+'</span>'+
-        (isAv?'<span style="margin-left:5px;font-size:10px;color:var(--com)">Available</span>':"")+
+        (isAv?'<span style="margin-left:5px;font-size:10px;color:var(--com)">✓ Available</span>':"")+
         '<div style="font-size:10px;color:var(--tx3)">'+m.c+'</div>'+
       '</div>';
     row.appendChild(info);
@@ -1500,7 +1568,9 @@ function renderDatabase(){
   var wrap=document.createElement("div");wrap.className="tab on";wrap.appendChild(c);
   document.getElementById("main").appendChild(wrap);
 
-  var classes=[...new Set(DB.monsters.map(function(m){return m.c;}).filter(Boolean))].sort();
+  var classes=[];
+  DB.monsters.forEach(function(m){if(m.c&&classes.indexOf(m.c)===-1)classes.push(m.c);});
+  classes.sort();
   var fr=document.createElement("div");fr.className="dbf";
   var classOpts=classes.map(function(cl){return '<option value="'+cl+'"'+(S.dbClass===cl?' selected':'')+'>'+cl+'</option>';}).join('');
   var elemOpts=CORE_ELEMENTS.map(function(e){return '<option value="'+e+'"'+(S.dbElem===e?' selected':'')+'>'+e+'</option>';}).join('');
@@ -1518,12 +1588,55 @@ function renderDatabase(){
   document.getElementById("dbElem").onchange=function(){S.dbElem=this.value;saveS();renderAll();};
   document.getElementById("dbIsl").onchange=function(){S.dbIsland=this.value;saveS();renderAll();};
 
+  // Status filter
+  var sfr=document.createElement("div");sfr.className="frow";sfr.style.marginTop="6px";
+  [["","All"],["avail","Available Now"],["needed","Needed"],["zap","For Zapping"],["wub","For Wubbox"]].forEach(function(kv){
+    var b=document.createElement("button");
+    b.className="rbtn"+(S.dbStatus===kv[0]?" on":"");
+    b.textContent=kv[1];
+    b.addEventListener("click",function(){S.dbStatus=kv[0];saveS();renderAll();});
+    sfr.appendChild(b);
+  });
+  c.appendChild(sfr);
+
+  // Pre-build zap demand map: cleanName.lower → [{name, still}]
+  var _zapEggMap={};
+  Object.values(S.zapTracked||{}).forEach(function(z){
+    var eggs=parseEggs(z.eggs_required||"");
+    Object.keys(eggs).forEach(function(eggN){
+      var need=eggs[eggN];
+      var sent=(z.sent&&z.sent[eggN])||0,bred=(z.bred&&z.bred[eggN])||0;
+      if(sent+bred>=need)return;
+      var cl=cleanN(eggN).toLowerCase();
+      if(!_zapEggMap[cl])_zapEggMap[cl]=[];
+      _zapEggMap[cl].push({name:z.monster_name,still:need-sent-bred});
+    });
+  });
+
   var list=DB.monsters.slice();
   if(S.dbSearch){var s2=S.dbSearch.toLowerCase();list=list.filter(function(m){return m.n.toLowerCase().indexOf(s2)>-1;});}
   if(S.dbRarity)list=list.filter(function(m){return rar(m.n)===S.dbRarity;});
   if(S.dbClass)list=list.filter(function(m){return m.c===S.dbClass;});
   if(S.dbElem)list=list.filter(function(m){return m.e.indexOf(S.dbElem)>-1;});
-  if(S.dbIsland)list=list.filter(function(m){return m.i.indexOf(S.dbIsland)>-1;});
+  if(S.dbIsland)list=list.filter(function(m){return m.i.indexOf(S.dbIsland)>-1||(m.c==="Celestial"&&S.dbIsland==="Celestial Island");});
+
+  // Attach computed status to each monster, then apply status filter
+  list=list.filter(function(m){
+    var legN=m.n+" ("+m.r+")";
+    var cl=cleanN(m.n).toLowerCase();
+    m._dbIsAvail=isAvailNow(legN);
+    m._dbMissingIslands=(m.islands||[]).filter(function(a){
+      return a.combo&&a.combo.length&&!isOwned(a.island,legN);
+    }).map(function(a){return a.island;});
+    m._dbZapTags=_zapEggMap[cl]||null;
+    m._dbWubSlots=wubboxUnboxedFor(m.n);
+    if(!S.dbStatus)return true;
+    if(S.dbStatus==="avail")return m._dbIsAvail;
+    if(S.dbStatus==="needed")return m._dbMissingIslands.length>0||(m._dbZapTags&&m._dbZapTags.length>0)||(m._dbWubSlots&&m._dbWubSlots.length>0);
+    if(S.dbStatus==="zap")return !!(m._dbZapTags&&m._dbZapTags.length);
+    if(S.dbStatus==="wub")return !!(m._dbWubSlots&&m._dbWubSlots.length);
+    return true;
+  });
 
   var cnt=document.createElement("div");cnt.className="cnt";cnt.textContent=list.length+" of "+DB.monsters.length+" monsters";c.appendChild(cnt);
   if(!list.length){var emp=document.createElement("div");emp.className="empty";emp.textContent="No results.";c.appendChild(emp);return;}
@@ -1618,7 +1731,7 @@ function renderDatabase(){
 
   var tw=document.createElement("div");tw.className="twrap";
   var tbl=document.createElement("table");
-  tbl.innerHTML='<thead><tr><th>Monster</th><th>Rarity</th><th>Class</th><th>Elements</th><th>Island</th><th>Obtain</th><th>Combo / Requirements</th><th>Time</th><th>Status</th></tr></thead>';
+  tbl.innerHTML='<thead><tr><th>Monster</th><th>Rarity</th><th>Class</th><th>Elements</th><th>Island</th><th>Obtain</th><th>Combo / Requirements</th><th>Breeding/Incubation Time</th><th>Owned</th></tr></thead>';
   var tb=document.createElement("tbody");
 
   list.forEach(function(m){
@@ -1630,11 +1743,20 @@ function renderDatabase(){
     }).join(" ");
 
     // Use filtered appearances when island filter is active, all otherwise
-    var apps=(m.islands||[]);
+    var apps=(m.islands||[]).slice();
+    // ── Celestial Island: synthesize from zapTargets (islands[] is empty in data.js) ──
+    if(m.c==="Celestial"&&!apps.length&&(!S.dbIsland||S.dbIsland==="Celestial Island")){
+      var celZt=(DB.zapTargets||[]).filter(function(t){
+        return t.island==="Celestial Island"&&cleanN(t.n).toLowerCase()===cleanN(m.n).toLowerCase();
+      });
+      if(celZt.length)apps=[{island:"Celestial Island",combo:null,obtain:"Zapping",time:"",_isCelestial:true}];
+    }
     if(S.dbIsland)apps=apps.filter(function(a){return a.island===S.dbIsland;});
     if(!apps.length)apps=[{island:"",combo:null,obtain:""}]; // placeholder row
 
-    var ownAny=m.i.some(function(isl){return isOwned(isl,legN);});
+    // For owned check: also try m.n directly (Adult celestials stored as "Adult Hornacle" not "Adult Hornacle (Adult)")
+    var ownAny=(m.i.length?m.i:((m.c==="Celestial")?["Celestial Island"]:[]))
+      .some(function(isl){return isOwned(isl,legN)||isOwned(isl,m.n);});
 
     apps.forEach(function(a,idx){
       var tr=document.createElement("tr");
@@ -1646,9 +1768,26 @@ function renderDatabase(){
         tdMon.rowSpan=apps.length;
         tdMon.style.verticalAlign="top";
         tdMon.style.paddingTop="9px";
+        var _sb2="";
+        if(m._dbIsAvail)_sb2+='<span class="bdg" style="background:rgba(63,185,80,.2);color:var(--com)">Available</span> ';
+        if(m._dbMissingIslands&&m._dbMissingIslands.length){
+          _sb2+='<div style="margin-top:2px">';
+          m._dbMissingIslands.forEach(function(isl){_sb2+='<span class="miss-tag">'+isl+'</span>';});
+          _sb2+='</div>';
+        }
+        if(m._dbZapTags&&m._dbZapTags.length){
+          _sb2+='<div style="margin-top:2px">';
+          m._dbZapTags.forEach(function(zt){_sb2+='<span class="bdg bdg-zap">Zap: '+zt.name+(zt.still?' \xD7'+zt.still:'')+'</span> ';});
+          _sb2+='</div>';
+        }
+        if(m._dbWubSlots&&m._dbWubSlots.length){
+          _sb2+='<div style="margin-top:2px"><span class="bdg bdg-wub">Wubbox \xD7'+m._dbWubSlots.length+'</span></div>';
+        }
         tdMon.innerHTML='<div style="display:flex;align-items:flex-start;gap:6px">'+
           monImgWithCtx(m.n,firstIsl,28)+
-          '<span'+(ownAny?' style="color:var(--com)"':'')+'>'+m.n+(ownAny?" ✓":"")+'</span></div>';
+          '<div><span'+(ownAny?' style="color:var(--com)"':'')+'>'+m.n+(ownAny?' ✓':'')+'</span>'+
+          (_sb2?'<div style="margin-top:3px;line-height:1.8">'+_sb2+'</div>':'')+
+          '</div></div>';
         tr.appendChild(tdMon);
 
         var tdRar=document.createElement("td");
@@ -1701,17 +1840,11 @@ function renderDatabase(){
       tdTime.textContent=a.time?(a.time+(a.enhanced?" / "+a.enhanced:"")):"—";
       tr.appendChild(tdTime);
 
-      // Status (per-island: owned + global: available / needed)
+      // Owned (per-island)
       var tdOwn=document.createElement("td");
       if(a.island){
-        var ownedHere=isOwned(a.island,legN);
-        var isAvDb=isAvailNow(legN);
-        var isNeedDb=!!(S.needed[a.island]&&S.needed[a.island][legN]);
-        var dbParts=[];
-        if(ownedHere)dbParts.push('<span style="color:var(--com);font-size:12px">✓ Owned</span>');
-        if(isAvDb&&!ownedHere)dbParts.push('<span class="bdg bdg-avail">Avail</span>');
-        if(isNeedDb&&!ownedHere)dbParts.push('<span class="bdg bdg-need">Needed</span>');
-        tdOwn.innerHTML=dbParts.join(' ');
+        var ownedHere=isOwned(a.island,legN)||isOwned(a.island,m.n);
+        tdOwn.innerHTML=ownedHere?'<span style="color:var(--com);font-size:13px">&#10003;</span>':"";
       }
       tr.appendChild(tdOwn);
 
@@ -1750,7 +1883,7 @@ function renderAvailable(){
       '<p style="font-size:12px;color:var(--tx3);margin-top:3px">Track which monsters are currently obtainable — seasonal, event, or returning.</p>'+
     '</div>'+
     '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+
-      '<a href="https://mysingingmonsters.fandom.com/wiki/Breeding_Availability#Currently_Available_Monsters" target="_blank" style="font-size:12px;color:var(--rar);text-decoration:none;display:flex;align-items:center;gap:4px" title="MSM Wiki — currently available monsters">MSM Wiki &#8599;</a>'+
+      '<a href="https://mysingingmonsters.fandom.com/wiki/Breeding_Availability#Currently_Available_Monsters" target="_blank" style="font-size:12px;color:var(--rar);text-decoration:none" title="MSM Wiki — currently available monsters">MSM Wiki &#8599;</a>'+
     '</div>';
   // second hdr row for actions (rebuilt below)
   c.appendChild(hdr);
@@ -1792,18 +1925,15 @@ function renderAvailable(){
       else{var withOb=m.islands.find(function(a){return a.obtain;});if(withOb)comboStr=withOb.obtain;}
     }
 
-    var firstIsl=(m.i&&m.i[0])||"";
-    var ownedAnywhere=m.i.some(function(isl){return isOwned(isl,key);});
     var card=document.createElement("div");
-    card.className="mc avail-card";
+    card.className="mc owned";
+    var firstIsl=(m.i&&m.i[0])||"";
     card.innerHTML=
       '<div class="mc-top">'+
         monImgWithCtx(m.n,firstIsl,42)+
         '<div class="mc-info">'+
           '<div class="mc-name">'+m.n+'</div>'+
-          '<div class="mc-badges"><span class="bdg bdg-'+r+'">'+m.r+'</span>'+
-            (ownedAnywhere?'<span class="bdg" style="background:rgba(63,185,80,.18);color:var(--com)">✓ Owned</span>':'')+
-          '</div>'+
+          '<div class="mc-badges"><span class="bdg bdg-'+r+'">'+m.r+'</span></div>'+
         '</div>'+
       '</div>'+
       (comboStr?'<div style="font-size:10px;color:var(--tx2);margin-bottom:5px;line-height:1.4">'+comboStr+'</div>':'')+
@@ -1831,23 +1961,27 @@ function renderIslands(){
   var key=S.islandSel;
   var h2=document.createElement("h2");h2.style.cssText="font-size:16px;font-weight:700;margin-bottom:13px";h2.textContent=key;c.appendChild(h2);
 
-  var existing=S.islandImages&&S.islandImages[key];
+  var existing=loadIslandImg(key);
   var zone=document.createElement("div");zone.className="imgzone";
   if(existing){
     zone.style.cursor="default";
     var img=document.createElement("img");img.src=existing;img.alt=key+" plan";zone.appendChild(img);
     var rmBtn=document.createElement("button");rmBtn.className="btn-sm btn-danger";rmBtn.style.marginTop="8px";
     rmBtn.textContent="Remove Image";
-    rmBtn.addEventListener("click",function(e){e.stopPropagation();delete S.islandImages[key];persistIslandImage(key,null);saveS();renderAll();});
+    rmBtn.addEventListener("click",function(e){e.stopPropagation();removeIslandImg(key);renderAll();});
     zone.appendChild(rmBtn);
   } else {
-    zone.innerHTML='<div style="color:var(--tx2);font-size:13px;font-weight:500">Click to upload island plan image</div><div style="color:var(--tx3);font-size:11px;margin-top:4px">PNG, JPG accepted</div>';
+    zone.innerHTML='<div style="color:var(--tx2);font-size:13px;font-weight:500">Click to upload island plan image</div><div style="color:var(--tx3);font-size:11px;margin-top:4px">PNG \xB7 JPG accepted</div>';
     zone.addEventListener("click",function(){
       var inp=document.createElement("input");inp.type="file";inp.accept="image/*";
       inp.addEventListener("change",function(e){
         var file=e.target.files[0];if(!file)return;
         var reader=new FileReader();
-        reader.onload=function(ev){if(!S.islandImages)S.islandImages={};S.islandImages[key]=ev.target.result;persistIslandImage(key,ev.target.result);saveS();renderAll()};
+        reader.onload=function(ev){
+          compressImg(ev.target.result,1920,0.78,function(compressed){
+            saveIslandImg(key,compressed);renderAll();
+          });
+        };
         reader.readAsDataURL(file);
       });inp.click();
     });
@@ -1881,33 +2015,56 @@ function renderSaveLoad(){
     '<table style="font-size:13px">'+
     '<tr><td style="padding:3px 10px;color:var(--tx3)">Total owned entries</td><td>'+ownedTotal+'</td></tr>'+
     '<tr><td style="padding:3px 10px;color:var(--tx3)">Active zap trackers</td><td>'+Object.keys(S.zapTracked||{}).length+'</td></tr>'+
-    '<tr><td style="padding:3px 10px;color:var(--tx3)">Island images saved</td><td>'+Object.keys(S.islandImages||{}).length+'</td></tr>'+
+    '<tr><td style="padding:3px 10px;color:var(--tx3)">Island images saved</td><td id="imgCountCell">—</td></tr>'+
     '</table></div>'+
     '<hr>'+
     '<div class="zcard" style="max-width:560px">'+
     '<div style="font-size:14px;font-weight:600;margin-bottom:7px;color:#f85149">Reset All Data</div>'+
     '<p style="font-size:13px;color:var(--tx2);margin-bottom:11px">Clear all progress. Cannot be undone.</p>'+
     '<button class="btn-danger" id="resetBtn">Reset All Progress</button></div>';
+  (function(){var n=0;try{for(var _i=0;_i<localStorage.length;_i++){if(localStorage.key(_i).indexOf("msm4_img_")===0)n++;}}catch(e){}var cel=document.getElementById("imgCountCell");if(cel)cel.textContent=n;}());
   document.getElementById("saveBtn").addEventListener("click",doSave);
   document.getElementById("loadBtn").addEventListener("click",function(){document.getElementById("fload").click();});
   document.getElementById("resetBtn").addEventListener("click",function(){
-    if(confirm("Reset ALL progress?")){S.owned={};S.needed={};S.zapTracked={};S.islandImages={};S.wubboxBoxed={};S.wubNeeded={};S.avail={};saveS();renderAll();}
+    if(confirm("Reset ALL progress?")){
+      S.owned={};S.needed={};S.zapTracked={};S.wubboxBoxed={};S.wubNeeded={};S.avail={};
+      try{var _rk=[];for(var _ri=0;_ri<localStorage.length;_ri++){var _k=localStorage.key(_ri);if(_k&&_k.indexOf("msm4_img_")===0)_rk.push(_k);}_rk.forEach(function(k){localStorage.removeItem(k);});}catch(e){}
+      saveS();renderAll();
+    }
   });
 }
 
 function doSave(){
-  var blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  var out=Object.assign({},S);
+  // Embed per-island images into the export file so they round-trip
+  var imgs={};
+  try{for(var _si=0;_si<localStorage.length;_si++){var _sk=localStorage.key(_si);if(_sk&&_sk.indexOf("msm4_img_")===0)imgs[_sk.slice("msm4_img_".length)]=localStorage.getItem(_sk);}}catch(e){}
+  out.islandImages=imgs;
+  var blob=new Blob([JSON.stringify(out,null,2)],{type:"application/json"});
   var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="msm_save.json";a.click();
 }
 function doLoad(evt){
   var file=evt.target.files[0];if(!file)return;
   var r=new FileReader();
-  r.onload=function(e){try{Object.assign(S,JSON.parse(e.target.result));saveS();renderAll();alert("Loaded!");}catch(err){alert("Error: "+err.message);}};
+  r.onload=function(e){
+    try{
+      var parsed=JSON.parse(e.target.result);
+      // Restore island images to per-island keys
+      if(parsed.islandImages){
+        Object.keys(parsed.islandImages).forEach(function(nm){
+          var d=parsed.islandImages[nm];
+          if(d){try{localStorage.setItem("msm4_img_"+nm,d);}catch(ex){}}
+        });
+        delete parsed.islandImages;
+      }
+      Object.assign(S,parsed);saveS();renderAll();alert("Loaded!");
+    }catch(err){alert("Error: "+err.message);}
+  };
   r.readAsText(file);evt.target.value="";
 }
 
 // BOOT
-loadS();initDB();loadIslandImages();initNav();renderAll();
+loadS();initDB();initNav();renderAll();
 
 // ── SERVICE WORKER REGISTRATION ───────────────────────────────────────────────
 if("serviceWorker" in navigator){
@@ -2031,7 +2188,7 @@ function setSyncStatus(msg,col){
 // They stay local-only in localStorage.
 function cloudSafeState(){
   var copy=JSON.parse(JSON.stringify(S));
-  delete copy.islandImages; // keep images local only
+  delete copy.islandImages; // images live in per-island localStorage keys, never in state blob
   return copy;
 }
 
@@ -2045,7 +2202,7 @@ function scheduleSyncSave(){
 function cloudSave(){
   if(!_sb||!_sbUser)return;
   S.lastSaved=Date.now();
-  try{localStorage.setItem("msm4",JSON.stringify(S));}catch(e){}
+  try{var _csnap=Object.assign({},S);delete _csnap.islandImages;localStorage.setItem("msm4",JSON.stringify(_csnap));}catch(e){}
   var payload={id:_sbUser.id,data:cloudSafeState(),updated_at:new Date().toISOString()};
   _sb.from("user_saves").upsert(payload).then(function(res){
     if(res.error){setSyncStatus("✕ Sync failed","#f85149");}
@@ -2062,10 +2219,9 @@ function cloudLoad(){
     var localTime=S.lastSaved||0;
     var cloudTime=cloud.lastSaved||0;
     if(cloudTime>localTime){
-      var localImages=S.islandImages||{};
       Object.assign(S,cloud);
-      S.islandImages=localImages; // restore local images
-      try{localStorage.setItem("msm4",JSON.stringify(S));}catch(e){}
+      // Island images live in per-island localStorage keys — cloudLoad never touches them
+      try{var _snap=Object.assign({},S);delete _snap.islandImages;localStorage.setItem("msm4",JSON.stringify(_snap));}catch(e){}
       renderAll();
       setSyncStatus("✓ Synced","var(--com)");
     } else {
