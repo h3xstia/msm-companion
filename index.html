@@ -311,6 +311,25 @@ input[type=file]{display:none}
   #availAddModal .frow{flex-direction:column;align-items:stretch}
   #availAddModal .frow select,#availAddModal .frow input{width:100% !important;max-width:none !important}
 }
+
+/* ── AVAILABLE-TAB card (orange accent, distinct from owned/green) ── */
+.mc.avail-card{border-color:#FF8C00;background:rgba(255,140,0,.07)}
+.mc.avail-card:hover{background:rgba(255,140,0,.12)}
+
+/* ── Sidebar section separator label ── */
+.sb-sep{padding:5px 13px 3px;font-size:10px;font-weight:700;color:var(--tx3);
+  text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;flex-shrink:0}
+@media (max-width:768px){.sb-sep{padding:5px 10px 3px}}
+
+/* ── Needed-toggle star button on collection cards ── */
+.mc-need-btn{
+  position:absolute;top:4px;right:26px;
+  background:none;border:none;cursor:pointer;
+  font-size:15px;padding:3px;line-height:1;
+  color:var(--tx3);transition:color .12s;
+}
+.mc-need-btn:hover{color:var(--epi)}
+.mc.needed .mc-need-btn{color:var(--epi)}
 </style>
 </head>
 <body>
