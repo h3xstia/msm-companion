@@ -674,18 +674,18 @@ function monImgSrc(name,islandCtx){
   // Strip 'Rare '/'Epic '/'Adult ' prefix before building base name
   var base=cleanN(name).replace(/^(Rare|Epic|Adult)\s+/i,"").replace(/'/g,"_");
   // Dipsters: 'Dipster - Do.png'
-  if(DIPSTER_NAMES[base])return "images/Monster Portrait Squares/Dipster - "+base+".png";
+  if(DIPSTER_NAMES[base])return "images/monster portrait squares/Dipster - "+base+".png";
   // Paironormals: name already has (Major)/(Minor) in it via cleanN keeping those
   // e.g. 'Arcorina (Major)' -> base='Arcorina (Major)' -> 'Arcorina (Major).png'
   // Adult celestials: 'Attmoz - adult.png'
-  if(/^adult\s/i.test(name))return "images/Monster Portrait Squares/"+base+" - adult.png";
+  if(/^adult\s/i.test(name))return "images/monster portrait squares/"+base+" - adult.png";
   // Epic Wubbox: 'Wubbox - Epic (Plant).png'
   if(/^epic\s+wubbox/i.test(name.trim())&&islandCtx){
     var isle=WUBBOX_ISLANDS[islandCtx]||islandCtx;
-    return "images/Monster Portrait Squares/Wubbox - Epic ("+isle+").png";
+    return "images/monster portrait squares/Wubbox - Epic ("+isle+").png";
   }
   var suffix=r==="R"?" - Rare":r==="E"?" - Epic":"";
-  return "images/Monster Portrait Squares/"+base+suffix+".png";
+  return "images/monster portrait squares/"+base+suffix+".png";
 }
 function monImg(name,size){
   size=size||40;
