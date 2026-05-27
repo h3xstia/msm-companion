@@ -2073,7 +2073,7 @@ loadS();initDB();initNav();renderAll();
 
 // ── SERVICE WORKER REGISTRATION ───────────────────────────────────────────────
 if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("/sw.js").catch(function(){});
+  navigator.serviceWorker.register("sw.js").catch(function(){});
 }
 
 // ── SUPABASE CONFIG ───────────────────────────────────────────────────────────
