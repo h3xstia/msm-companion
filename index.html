@@ -458,9 +458,6 @@ var S = {
   owned:{}, needed:{}, zapTracked:{}, wubboxBoxed:{}, wubNeeded:{}, zapOrder:{},
   avail:{}
 };
-// Tab migration: old 8-tab layout (with Breeding=1) -> new 7-tab layout (Breeding removed)
-// Old: Collection=0 Breeding=1 Zapping=2 Wubbox=3 Available=4 Database=5 Islands=6 SaveLoad=7
-// New: Collection=0 Zapping=1  Wubbox=2  Available=3 Database=4 Islands=5  SaveLoad=6
 var _TAB_MIG=[0,0,1,2,3,4,5,6];
 function loadS(){
   try{
