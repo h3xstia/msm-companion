@@ -1781,7 +1781,12 @@ function renderDatabase(){
           _sb2+='</div>';
         }
         if(m._dbWubSlots&&m._dbWubSlots.length){
-          _sb2+='<div style="margin-top:2px"><span class="bdg bdg-wub">Wubbox \xD7'+m._dbWubSlots.length+'</span></div>';
+          _sb2+='<div style="margin-top:2px">';
+          m._dbWubSlots.forEach(function(ws){
+            var tLabel=ws.type.charAt(0).toUpperCase()+ws.type.slice(1);
+            _sb2+='<span class="bdg bdg-wub">'+ws.island+' \xB7 '+tLabel+'</span> ';
+          });
+          _sb2+='</div>';
         }
         tdMon.innerHTML='<div style="display:flex;align-items:flex-start;gap:6px">'+
           monImgWithCtx(m.n,firstIsl,28)+
@@ -2072,9 +2077,8 @@ if("serviceWorker" in navigator){
 }
 
 // ── SUPABASE CONFIG ───────────────────────────────────────────────────────────
-// Paste your project URL and anon key from supabase.com → project → Settings → API
-var SUPABASE_URL  = "https://xmryqvmnrxzfkzwnlhve.supabase.co";
-var SUPABASE_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhtcnlxdm1ucnh6Zmt6d25saHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDk3MDAsImV4cCI6MjA5NDQyNTcwMH0.4BxK_d5obKQTOv9e--Befpc3KQGc_e6IeS2QqOuBsfg";
+var SUPABASE_URL = "%%SUPABASE_URL%%";
+var SUPABASE_KEY = "%%SUPABASE_KEY%%";
 
 var _sb      = null;   // Supabase client (null until config is set)
 var _sbUser  = null;   // currently logged-in user
