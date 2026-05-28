@@ -77,7 +77,8 @@ window.DB = {
     "Minor Paironormal Carnival",
     "Plasma Islet",
     "Mech Islet",
-    "Shadow Islet"
+    "Shadow Islet",
+    "Crystal Islet"
   ],
 
   // ── Monsters ────────────────────────────────────────────────────────────────
@@ -3614,7 +3615,8 @@ window.DB = {
       { "island": "Water Island", "combo": ["Shellbeat", "Any Triple"], "time": "1d 12h", "enhanced": "1d 3h" },
       { "island": "Ethereal Island", "combo": ["Jeeode", "any monster"], "obtain": "Teleport", "time": "1d 12h", "enhanced": "1d 3h" },
       { "island": "Colossingum", "combo": null, "obtain": "Teleport" },
-      { "island": "Mirror Water Island", "combo": ["Shellbeat", "Any Triple"], "time": "1d 12h", "enhanced": "1d 3h" }
+      { "island": "Mirror Water Island", "combo": ["Shellbeat", "Any Triple"], "time": "1d 12h", "enhanced": "1d 3h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "10h" }
     ]
   },
   {
@@ -3673,7 +3675,8 @@ window.DB = {
     "islands": [
       { "island": "Water Island", "combo": ["Shellbeat", "Any Triple"], "time": "1d 21h 30m", "enhanced": "1d 10h 7m 30s" },
       { "island": "Ethereal Island", "combo": ["Jeeode", "any Single Ethereal"], "obtain": "Teleport", "time": "12h 38m 20s", "enhanced": "9h 28m 45s" },
-      { "island": "Mirror Water Island", "combo": ["Shellbeat", "Any Triple"], "time": "1d 21h 30m", "enhanced": "1d 10h 7m 30s" }
+      { "island": "Mirror Water Island", "combo": ["Shellbeat", "Any Triple"], "time": "1d 21h 30m", "enhanced": "1d 10h 7m 30s" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "12h 38m 20s" }
     ]
   },
   {
@@ -3774,7 +3777,8 @@ window.DB = {
     "islands": [
       { "island": "Ethereal Island", "combo": ["Ghazt", "Jeeode"], "time": "1d 18h", "enhanced": "1d 7h 30m" },
       { "island": "Colossingum", "combo": null, "obtain": "Teleport" },
-      { "island": "Plasma Islet", "combo": null, "obtain": "Harmonizing", "time": "20h" }
+      { "island": "Plasma Islet", "combo": null, "obtain": "Harmonizing", "time": "20h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "20h" }
     ]
   },
   {
@@ -3808,7 +3812,8 @@ window.DB = {
     "islands": [
       { "island": "Ethereal Island", "combo": ["Grumpyre", "Jeeode"], "time": "1d 18h", "enhanced": "1d 7h 30m" },
       { "island": "Colossingum", "combo": null, "obtain": "Teleport" },
-      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "20h" }
+      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "20h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "20h" }
     ]
   },
   {
@@ -3830,7 +3835,8 @@ window.DB = {
     "islands": [
       { "island": "Ethereal Island", "combo": ["Reebro", "Jeeode"], "time": "1d 18h", "enhanced": "1d 7h 30m" },
       { "island": "Colossingum", "combo": null, "obtain": "Teleport" },
-      { "island": "Mech Islet", "combo": null, "obtain": "Harmonizing", "time": "20h" }
+      { "island": "Mech Islet", "combo": null, "obtain": "Harmonizing", "time": "20h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "20h" }
     ]
   },
   {
@@ -3851,7 +3857,8 @@ window.DB = {
     "e": ["Crystal", "Poison"],
     "islands": [
       { "island": "Ethereal Island", "combo": ["Jeeode", "Humbug"], "time": "1d 18h", "enhanced": "1d 7h 30m" },
-      { "island": "Colossingum", "combo": null, "obtain": "Teleport" }
+      { "island": "Colossingum", "combo": null, "obtain": "Teleport" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "20h" }
     ]
   },
   {
@@ -3883,7 +3890,8 @@ window.DB = {
     "e": ["Plasma", "Crystal"],
     "islands": [
       { "island": "Ethereal Island", "combo": ["Ghazt", "Jeeode"], "time": "2d 4h 30m", "enhanced": "1d 15h 22m 30s" },
-      { "island": "Plasma Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 1h" }
+      { "island": "Plasma Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 1h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 1h" }
     ]
   },
   {
@@ -3914,7 +3922,8 @@ window.DB = {
     "e": ["Shadow", "Crystal"],
     "islands": [
       { "island": "Ethereal Island", "combo": ["Grumpyre", "Jeeode"], "time": "2d 4h 30m", "enhanced": "1d 15h 22m 30s" },
-      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 1h" }
+      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 1h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 1h" }
     ]
   },
   {
@@ -3934,7 +3943,8 @@ window.DB = {
     "e": ["Mech", "Crystal"],
     "islands": [
       { "island": "Ethereal Island", "combo": ["Reebro", "Jeeode"], "time": "2d 4h 30m", "enhanced": "1d 15h 22m 30s" },
-      { "island": "Mech Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 1h" }
+      { "island": "Mech Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 1h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 1h" }
     ]
   },
   {
@@ -3953,7 +3963,8 @@ window.DB = {
     "c": "Ethereal",
     "e": ["Crystal", "Poison"],
     "islands": [
-      { "island": "Ethereal Island", "combo": ["Jeeode", "Humbug"], "time": "2d 4h 30m", "enhanced": "1d 15h 22m 30s" }
+      { "island": "Ethereal Island", "combo": ["Jeeode", "Humbug"], "time": "2d 4h 30m", "enhanced": "1d 15h 22m 30s" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 1h" }
     ]
   },
   {
@@ -4066,7 +4077,8 @@ window.DB = {
     "islands": [
       { "island": "Ethereal Workshop", "combo": ["Plasma Meeb", "Shadow Meeb", "Crystal Meeb"], "obtain": "Synthesis", "time": "1d 6h", "enhanced": "10h" },
       { "island": "Plasma Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" },
-      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" }
+      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" }
     ]
   },
   {
@@ -4088,7 +4100,8 @@ window.DB = {
     "islands": [
       { "island": "Ethereal Workshop", "combo": ["Plasma Meeb", "Mech Meeb", "Crystal Meeb"], "obtain": "Synthesis", "time": "1d 6h", "enhanced": "10h" },
       { "island": "Plasma Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" },
-      { "island": "Mech Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" }
+      { "island": "Mech Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" }
     ]
   },
   {
@@ -4109,7 +4122,8 @@ window.DB = {
     "e": ["Plasma", "Crystal", "Poison"],
     "islands": [
       { "island": "Ethereal Workshop", "combo": ["Plasma Meeb", "Crystal Meeb", "Poison Meeb"], "obtain": "Synthesis", "time": "1d 6h", "enhanced": "10h" },
-      { "island": "Plasma Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" }
+      { "island": "Plasma Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" }
     ]
   },
   {
@@ -4120,7 +4134,8 @@ window.DB = {
     "islands": [
       { "island": "Ethereal Workshop", "combo": ["Shadow Meeb", "Mech Meeb", "Crystal Meeb"], "obtain": "Synthesis", "time": "1d 6h", "enhanced": "10h" },
       { "island": "Mech Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" },
-      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" }
+      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" }
     ]
   },
   {
@@ -4151,7 +4166,8 @@ window.DB = {
     "e": ["Mech", "Crystal", "Poison"],
     "islands": [
       { "island": "Ethereal Workshop", "combo": ["Mech Meeb", "Crystal Meeb", "Poison Meeb"], "obtain": "Synthesis", "time": "1d 6h", "enhanced": "10h" },
-      { "island": "Mech Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" }
+      { "island": "Mech Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" }
     ]
   },
   {
@@ -4174,7 +4190,8 @@ window.DB = {
     "islands": [
       { "island": "Ethereal Workshop", "combo": ["Tuned Up Plasma (Rare)", "Tuned Up Shadow (Rare)", "Tuned Up Crystal (Rare)"], "obtain": "Synthesis" },
       { "island": "Plasma Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" },
-      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" }
+      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" }
     ]
   },
   {
@@ -4196,7 +4213,8 @@ window.DB = {
     "islands": [
       { "island": "Ethereal Workshop", "combo": ["Tuned Up Plasma (Rare)", "Tuned Up Mech (Rare)", "Tuned Up Crystal (Rare)"], "obtain": "Synthesis" },
       { "island": "Plasma Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" },
-      { "island": "Mech Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" }
+      { "island": "Mech Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" }
     ]
   },
   {
@@ -4211,6 +4229,17 @@ window.DB = {
     ]
   },
   {
+    "n": "Rare Flasque",
+    "r": "Rare",
+    "c": "Ethereal",
+    "e": ["Plasma", "Crystal", "Poison"],
+    "islands": [
+      { "island": "Ethereal Workshop", "combo": ["Tuned Up Plasma Meeb (Rare)", "Tuned Up Crystal Meeb (Rare)", "Tuned Up Poison Meeb (Rare)"], "obtain": "Synthesis" },
+      { "island": "Plasma Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" }
+    ]
+  },
+  {
     "n": "Rare Nitebear",
     "r": "Rare",
     "c": "Ethereal",
@@ -4218,7 +4247,8 @@ window.DB = {
     "islands": [
       { "island": "Ethereal Workshop", "combo": ["Tuned Up Shadow (Rare)", "Tuned Up Mech (Rare)", "Tuned Up Crystal (Rare)"], "obtain": "Synthesis" },
       { "island": "Mech Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" },
-      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" }
+      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" }
     ]
   },
   {
@@ -4268,7 +4298,8 @@ window.DB = {
     "c": "Ethereal",
     "e": ["Plasma", "Mech", "Crystal", "Poison"],
     "islands": [
-      { "island": "Ethereal Workshop", "combo": ["Gaddzooks", "2 of each Gaddzooks element Meebs", "3 Poison Meebs"], "obtain": "Synthesis", "time": "1d 18h", "enhanced": "17h" }
+      { "island": "Ethereal Workshop", "combo": ["Gaddzooks", "2 of each Gaddzooks element Meebs", "3 Poison Meebs"], "obtain": "Synthesis", "time": "1d 18h", "enhanced": "17h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" }
     ]
   },
   {
@@ -4512,6 +4543,15 @@ window.DB = {
     "e": ["Primordial Cold"],
     "islands": [
       { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "2d 2h" }
+    ]
+  },
+  {
+    "n": "Droah",
+    "r": "Common",
+    "c": "Primordial",
+    "e": ["Primordial Water"],
+    "islands": [
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "2d 2h" }
     ]
   },
   {
