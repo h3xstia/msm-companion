@@ -376,8 +376,13 @@ th{border-bottom:1px solid var(--brd2)}
       </select>
     </div>
     <div class="mrow"><label>Monster</label><select id="zm_mon"></select></div>
-    <div class="mrow"><label>Days until deadline (0 = no deadline)</label>
-      <input type="number" id="zm_days" min="0" max="400" value="2">
+    <div class="mrow"><label>Time until deadline (0 / blank = no deadline)</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="number" id="zm_days" min="0" max="400" value="0" style="width:68px">
+        <span style="font-size:12px;color:var(--tx2)">days</span>
+        <input type="number" id="zm_hours" min="0" max="23" value="0" style="width:60px">
+        <span style="font-size:12px;color:var(--tx2)">hours</span>
+      </div>
     </div>
     <div class="mact">
       <button class="btn" onclick="closeZapModal()">Cancel</button>
@@ -390,8 +395,13 @@ th{border-bottom:1px solid var(--brd2)}
   <div class="modal">
     <h3 id="av_title">Mark as Available</h3>
     <div class="mrow">
-      <label>Days available (leave blank for no expiry)</label>
-      <input type="number" id="av_days" min="1" max="365" placeholder="e.g. 7" style="width:100%">
+      <label>Available for (leave blank / 0 for no expiry)</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="number" id="av_days" min="0" max="365" placeholder="0" style="width:68px">
+        <span style="font-size:12px;color:var(--tx2)">days</span>
+        <input type="number" id="av_hours" min="0" max="23" placeholder="0" style="width:60px">
+        <span style="font-size:12px;color:var(--tx2)">hours</span>
+      </div>
     </div>
     <div class="mact">
       <button class="btn" onclick="closeAvailModal()">Cancel</button>
@@ -655,6 +665,35 @@ function parseEggs(str){
   return r;
 }
 function daysLeft(iso){if(!iso)return null;return Math.max(0,Math.ceil((new Date(iso)-new Date())/86400000));}
+// Format a ms-remaining value into "2d 3h left" / "5h left" / "Expired"
+function _fmtMs(ms){
+  if(ms<=0)return null;
+  var days=Math.floor(ms/86400000);
+  var hrs=Math.floor((ms%86400000)/3600000);
+  if(days>0)return days+"d"+(hrs>0?" "+hrs+"h":"")+" left";
+  var mins=Math.ceil(ms/60000);
+  return hrs>0?hrs+"h left":mins+"m left";
+}
+// Returns {cls, txt} for zapping deadline badge
+function fmtDeadline(iso){
+  if(!iso)return{cls:"dl-none",txt:"No deadline"};
+  var ms=new Date(iso)-new Date();
+  if(ms<=0)return{cls:"dl-exp",txt:"Expired"};
+  var txt=_fmtMs(ms);
+  var days=Math.floor(ms/86400000);
+  var cls=days<=2?"dl-urg":days<=5?"dl-warn":"dl-ok";
+  return{cls:cls,txt:txt};
+}
+// Returns HTML span for available-tab time-left display
+function fmtAvailTime(until){
+  if(!until)return'<span style="color:var(--com);font-size:10px">∞ No expiry</span>';
+  var ms=until-Date.now();
+  if(ms<=0)return'<span style="color:#f85149;font-size:10px">Expired!</span>';
+  var txt=_fmtMs(ms);
+  var days=Math.floor(ms/86400000);
+  var col=days<=2?"#f85149":days<=5?"var(--epi)":"var(--com)";
+  return'<span style="color:'+col+';font-size:10px">'+txt+'</span>';
+}
 function dbEntry(name){
   var cl=cleanN(name).toLowerCase();
   return DB.monsters.find(function(m){return m.n.toLowerCase()===name.toLowerCase()||cleanN(m.n).toLowerCase()===cl;});
@@ -738,7 +777,9 @@ function confirmZap(){
   var opt=sel.options[sel.selectedIndex];
   var eggs=opt?opt.getAttribute("data-eggs")||"":"";
   var days=parseInt(document.getElementById("zm_days").value)||0;
-  var deadline=days>0?new Date(Date.now()+days*86400000).toISOString():null;
+  var hours=parseInt(document.getElementById("zm_hours").value)||0;
+  var totalMs=days*86400000+hours*3600000;
+  var deadline=totalMs>0?new Date(Date.now()+totalMs).toISOString():null;
   S.zapTracked[isl+"__"+Date.now()]={island:isl,monster_name:sel.value,eggs_required:eggs,deadline:deadline,sent:{},bred:{}};
   saveS();closeZapModal();renderAll();
 }
@@ -1104,14 +1145,8 @@ function renderZapping(){
 
   allEntries.forEach(function(entry){
     var id=entry[0],z=entry[1];
-    var days=daysLeft(z.deadline);
-    var dlCls="dl-none",dlTxt="No deadline";
-    if(days!==null){
-      if(days===0){dlCls="dl-exp";dlTxt="EXPIRED";}
-      else if(days<=2){dlCls="dl-urg";dlTxt=days+"d left";}
-      else if(days<=5){dlCls="dl-warn";dlTxt=days+"d left";}
-      else{dlCls="dl-ok";dlTxt=days+"d left";}
-    }
+    var _dl=fmtDeadline(z.deadline);
+    var dlCls=_dl.cls,dlTxt=_dl.txt;
     var eggs=parseEggs(z.eggs_required||"");
     var tNeed=0,tSent=0,tBred=0,tHave=0;
     Object.entries(eggs).forEach(function(ee){
@@ -1406,8 +1441,14 @@ function openAvailModal(key){
   var m=DB.monsters.find(function(x){return x.n+" ("+x.r+")"===key;});
   document.getElementById("av_title").textContent="Mark Available: "+(m?m.n:key);
   var existing=S.avail&&S.avail[key];
-  var curDays=existing&&existing.until?Math.ceil((existing.until-Date.now())/864e5):null;
-  document.getElementById("av_days").value=curDays&&curDays>0?curDays:"";
+  if(existing&&existing.until){
+    var rem=Math.max(0,existing.until-Date.now());
+    document.getElementById("av_days").value=Math.floor(rem/86400000)||"";
+    document.getElementById("av_hours").value=Math.round((rem%86400000)/3600000)||"";
+  }else{
+    document.getElementById("av_days").value="";
+    document.getElementById("av_hours").value="";
+  }
   document.getElementById("availModal").classList.add("on");
   setTimeout(function(){document.getElementById("av_days").focus();},50);
 }
@@ -1421,6 +1462,7 @@ function openAvailBatch(){
     ?(function(){var m=DB.monsters.find(function(x){return x.n+" ("+x.r+")"===_avKeys[0];});return"Mark Available: "+(m?m.n:_avKeys[0]);})()
     :"Mark "+count+" Monsters Available";
   document.getElementById("av_days").value="";
+  document.getElementById("av_hours").value="";
   document.getElementById("availModal").classList.add("on");
   setTimeout(function(){document.getElementById("av_days").focus();},50);
 }
@@ -1430,7 +1472,9 @@ function confirmAvail(){
   if(!keys.length)return;
   if(!S.avail)S.avail={};
   var days=parseInt(document.getElementById("av_days").value)||0;
-  var until=days>0?Date.now()+days*864e5:null;
+  var hours=parseInt(document.getElementById("av_hours").value)||0;
+  var totalMs=days*86400000+hours*3600000;
+  var until=totalMs>0?Date.now()+totalMs:null;
   keys.forEach(function(k){S.avail[k]={until:until};});
   _avKeys=[];_avKey=null;
   saveS();closeAvailModal();closeAvailAddModal();renderAll();
@@ -1913,17 +1957,32 @@ function renderAvailable(){
     var m=DB.monsters.find(function(x){return x.n+" ("+x.r+")"===key;});
     if(!m)return;
     var r=rar(m.n);
-    var daysL=availDaysLeft(S.avail[key]&&S.avail[key].until);
-    var timeLabel=daysL===null?'<span style="color:var(--com);font-size:10px">∞ No expiry</span>':
-      daysL===0?'<span style="color:#f85149;font-size:10px">Expires today!</span>':
-      '<span style="color:var(--epi);font-size:10px">'+daysL+' day'+(daysL===1?"":"s")+' left</span>';
 
-    // Build combo/requirement string for this monster
-    var comboStr="";
-    if(m.islands){
-      var withCombo=m.islands.find(function(a){return a.combo&&a.combo.length;});
-      if(withCombo)comboStr=withCombo.combo.join(" + ");
-      else{var withOb=m.islands.find(function(a){return a.obtain;});if(withOb)comboStr=withOb.obtain;}
+    // Build per-island combo + time entries
+    var comboHtml="";
+    if(m.islands&&m.islands.length){
+      var entries=[];
+      m.islands.forEach(function(a){
+        if(a.combo&&a.combo.length){
+          var t=a.time?(a.enhanced?a.time+" / "+a.enhanced:a.time):"";
+          entries.push({island:a.island,combo:a.combo.join(" + "),time:t});
+        } else if(a.obtain){
+          entries.push({island:a.island,combo:a.obtain,time:""});
+        }
+      });
+      if(entries.length){
+        comboHtml='<div style="margin-bottom:6px;border-top:1px solid var(--brd);padding-top:6px">';
+        entries.forEach(function(e){
+          comboHtml+=
+            '<div style="margin-bottom:4px">'+
+              '<div style="font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:.4px">'+e.island+'</div>'+
+              '<div style="font-size:10px;color:var(--tx2);line-height:1.4">'+e.combo+
+                (e.time?'<span style="color:var(--tx3)"> · '+e.time+'</span>':'')+
+              '</div>'+
+            '</div>';
+        });
+        comboHtml+='</div>';
+      }
     }
 
     var card=document.createElement("div");
@@ -1937,8 +1996,8 @@ function renderAvailable(){
           '<div class="mc-badges"><span class="bdg bdg-'+r+'">'+m.r+'</span></div>'+
         '</div>'+
       '</div>'+
-      (comboStr?'<div style="font-size:10px;color:var(--tx2);margin-bottom:5px;line-height:1.4">'+comboStr+'</div>':'')+
-      timeLabel+
+      comboHtml+
+      fmtAvailTime(S.avail[key]&&S.avail[key].until)+
       '<div style="margin-top:7px;display:flex;gap:5px">'+
         '<button class="btn-sm" style="flex:1;font-size:10px" data-avkey="'+key+'" data-avaction="edit">Edit</button>'+
         '<button class="btn-sm btn-danger" style="font-size:10px" data-avkey="'+key+'" data-avaction="remove">✕</button>'+
