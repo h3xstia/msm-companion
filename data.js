@@ -4384,6 +4384,15 @@ window.DB = {
     ]
   },
   {
+    "n": "Raqsoun (Major)",
+    "r": "Common",
+    "c": "Paironormal",
+    "e": ["Control", "Ruin"],
+    "islands": [
+      { "island": "Major Paironormal Carnival", "combo": ["Hairionette (Major)", "Arcorina (Major)"], "time": "1d 21h", "enhanced": "1d 9h 45m" }
+    ]
+  },
+  {
     "n": "eRmA gUrDy (Major)",
     "r": "Common",
     "c": "Paironormal",
@@ -4471,6 +4480,15 @@ window.DB = {
     "e": ["Control", "Hoax"],
     "islands": [
       { "island": "Minor Paironormal Carnival", "combo": ["Scallyrags (Major)"], "obtain": "Fuging", "time": "1d 21h", "enhanced": "22h" }
+    ]
+  },
+  {
+    "n": "Raqsoun (Minor)",
+    "r": "Common",
+    "c": "Paironormal",
+    "e": ["Control", "Ruin"],
+    "islands": [
+      { "island": "Minor Paironormal Carnival", "combo": ["Raqsoun (Major)"], "obtain": "Fuging", "time": "1d 21h", "enhanced": "22h" }
     ]
   },
   {
@@ -5047,6 +5065,15 @@ window.DB = {
   },
   {
     "n": "Epic Blipsqueak",
+    "r": "Epic",
+    "c": "Supernatural",
+    "e": ["Electricity"],
+    "islands": [
+      { "island": "Wublin Island", "combo": null, "obtain": "Zapping" }
+    ]
+  },
+  {
+    "n": "Epic Bona-Petite",
     "r": "Epic",
     "c": "Supernatural",
     "e": ["Electricity"],
@@ -8020,6 +8047,25 @@ window.DB = {
       { "monster": "Epic Deedge", "eggs": 1 },
       { "monster": "Epic Glowl", "eggs": 1 },
       { "monster": "Epic Wynq", "eggs": 1 }
+    ]
+  },
+   {
+    "n": "Epic Bona-Petite",
+    "island": "Wublin Island",
+    "limit": "No Time Limit",
+    "requirements": [
+      { "monster": "Epic Mammott", "eggs": 1 },
+      { "monster": "Epic Fwog", "eggs": 1 },
+      { "monster": "Epic Drumpler", "eggs": 1 },
+      { "monster": "Epic Maw", "eggs": 1 },
+      { "monster": "Epic PomPom", "eggs": 1 },
+      { "monster": "Epic Bowgart", "eggs": 1 },
+      { "monster": "Epic T-Rox", "eggs": 1 },
+      { "monster": "Epic Riff", "eggs": 1 },
+      { "monster": "Epic Entbrat", "eggs": 1 },
+      { "monster": "Epic Sooza", "eggs": 1 },
+      { "monster": "Epic Woolabee", "eggs": 1 },
+      { "monster": "Epic Bisonorus", "eggs": 1 }
     ]
   },
   {
