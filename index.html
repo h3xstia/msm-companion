@@ -71,17 +71,9 @@ select:focus,input:focus{border-color:var(--acc)}
 .bdg-wub{background:rgba(86,180,233,.18);color:#56b4e9}
 .bdg-avail{background:rgba(255,140,0,.18);color:#FF8C00}
 .mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:8px}
-.mc{background:var(--bg2);border:1px solid var(--brd);border-radius:11px;padding:9px;cursor:pointer;position:relative;user-select:none;transition:background .12s,border-color .12s}
+.mc{background:var(--bg2);border:1px solid var(--brd);border-radius:11px;padding:9px;cursor:pointer;position:relative;user-select:none;transition:background .12s,border-color .12s,box-shadow .12s}
 .mc:hover{background:var(--bg3)}
 .mc.owned{border-color:var(--com);background:rgba(63,185,80,.07)}
-.mc.needed{outline:2px solid var(--epi);outline-offset:-1px}
-.mc.zneed{outline:2px solid #bc8cff;outline-offset:-1px}
-.mc.wneed{outline:2px solid #56b4e9;outline-offset:-1px}
-.mc.avail-now{outline:2px solid #FF8C00;outline-offset:-1px}
-.mc-chk{position:absolute;top:6px;right:6px;width:17px;height:17px;border-radius:50%;background:var(--com);color:#000;font-size:10px;font-weight:700;align-items:center;justify-content:center;display:none}
-.mc.owned .mc-chk{display:flex}
-.mc-star{position:absolute;top:5px;right:26px;font-size:12px;display:none}
-.mc.needed .mc-star{display:block}
 .mc-top{display:flex;gap:7px;align-items:flex-start;margin-bottom:5px}
 .mc-img{width:42px;height:42px;border-radius:6px;object-fit:contain;background:var(--bg4);flex-shrink:0;display:block}
 .mc-info{flex:1;min-width:0}
@@ -314,12 +306,9 @@ input[type=file]{display:none}
   text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;flex-shrink:0}
 @media (max-width:768px){.sb-sep{padding:5px 10px 3px}}
 
-/* ── Needed-toggle star on collection cards ── */
-.mc-need-btn{position:absolute;top:4px;right:26px;background:none;border:none;cursor:pointer;
-  font-size:15px;padding:3px;line-height:1;color:var(--tx3);transition:color .12s}
-.mc-need-btn:hover{color:var(--epi)}
-.mc.needed .mc-need-btn{color:var(--epi)}
-.mc.wneed .mc-need-btn{color:#56b4e9}
+/* ── Available egg highlight in zapping tab ── */
+.egg.egg-avail{border-color:#FF8C00;background:rgba(255,140,0,.1)}
+.egg.egg-avail .egg-name{color:#FF8C00}
 
 /* ── Collection sidebar item with count badge ── */
 .sbi-inner{display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px;min-width:0}
@@ -415,7 +404,7 @@ th{border-bottom:1px solid var(--brd2)}
     <h3>Add Available Monster</h3>
     <div class="frow" style="margin-bottom:6px;gap:6px">
       <input type="text" id="aas_srch" placeholder="&#128269; Search…" style="flex:1;min-width:0">
-      <select id="aas_rar"><option value="">All Rarities</option><option value="Common">Common</option><option value="Rare">Rare</option><option value="Epic">Epic</option><option value="Legendary">Legendary</option></select>
+      <select id="aas_rar"><option value="">All Rarities</option><option value="Common">Common</option><option value="Rare">Rare</option><option value="Epic">Epic</option></select>
       <select id="aas_cls" style="max-width:130px"><option value="">All Classes</option></select>
     </div>
     <div class="frow" style="margin-bottom:8px;gap:6px">
@@ -459,10 +448,11 @@ th{border-bottom:1px solid var(--brd2)}
 // STATE
 var S = {
   tab:0,
-  colIsland:"Plant Island", colRarity:"", colHideOwned:false, colNeedOnly:false,
+  colIsland:"Plant Island", colRarity:"", colHideOwned:false,
   brIsland:"Plant Island", brRarity:"", brHideOwned:false, brBreedOnly:false, brSearch:"",
   wbIsland:"Plant Island", wbType:"common",
-  dbSearch:"", dbRarity:"", dbClass:"", dbElem:"", dbIsland:"", dbStatus:"",
+  dbSearch:"", dbRarity:"", dbClass:"", dbElem:"", dbIsland:"",
+  dbStatuses:{avail:false,needed:false,zap:false,wub:false},
   islandSel:"Plant Island",
   avSearch:"", avRarity:"", avClass:"",
   owned:{}, needed:{}, zapTracked:{}, wubboxBoxed:{}, wubNeeded:{}, zapOrder:{},
@@ -486,6 +476,13 @@ function loadS(){
         delete parsed.islandImages;
       }
       Object.assign(S,parsed);
+      // Migrate old single-value dbStatus → dbStatuses object
+      if(typeof S.dbStatus==="string"){
+        if(!S.dbStatuses)S.dbStatuses={avail:false,needed:false,zap:false,wub:false};
+        if(S.dbStatus&&S.dbStatuses.hasOwnProperty(S.dbStatus))S.dbStatuses[S.dbStatus]=true;
+        delete S.dbStatus;
+      }
+      if(!S.dbStatuses)S.dbStatuses={avail:false,needed:false,zap:false,wub:false};
     }
   }catch(e){}
 }
@@ -646,14 +643,17 @@ function bdg(r){return '<span class="bdg bdg-'+r+'">'+rarLabel(r)+'</span>';}
 function getIslandMons(key){
   return (DB.islands[key]||[]).filter(function(m){return m.n.indexOf("Box Requirements")===-1;});
 }
+// Returns [{name, still}] for each tracked zapping monster that still needs eggs of monName
 function zapNeeded(monName){
   var clean=cleanN(monName).toLowerCase(),res=[];
   Object.entries(S.zapTracked).forEach(function(e){
     var z=e[1];
     var eggs=parseEggs(z.eggs_required||"");
     Object.entries(eggs).forEach(function(ee){
+      var need=ee[1];
       var s=(z.sent&&z.sent[ee[0]])||0,b=(z.bred&&z.bred[ee[0]])||0;
-      if(s+b<ee[1]&&cleanN(ee[0]).toLowerCase()===clean)res.push(z.monster_name);
+      if(s+b<need&&cleanN(ee[0]).toLowerCase()===clean)
+        res.push({name:z.monster_name,still:need-s-b});
     });
   });
   return res;
@@ -661,7 +661,7 @@ function zapNeeded(monName){
 function parseEggs(str){
   var r={};
   if(!str||!str.trim())return r;
-  str.split(",").forEach(function(p){var m=p.trim().match(/^(.+?)\s+x(\d+)$/);if(m)r[m[1].trim()]=parseInt(m[2]);});
+  str.split(",").forEach(function(p){var m=p.trim().match(/^(.+?)\s+x(\d+)$/);if(m){var k=m[1].trim();r[k]=(r[k]||0)+parseInt(m[2]);}});
   return r;
 }
 function daysLeft(iso){if(!iso)return null;return Math.max(0,Math.ceil((new Date(iso)-new Date())/86400000));}
@@ -697,6 +697,17 @@ function fmtAvailTime(until){
 function dbEntry(name){
   var cl=cleanN(name).toLowerCase();
   return DB.monsters.find(function(m){return m.n.toLowerCase()===name.toLowerCase()||cleanN(m.n).toLowerCase()===cl;});
+}
+// Compute stacked box-shadow rings for multi-state card indicators.
+// states: {avail, zap, wub, need} — each boolean. Innermost ring = first true state.
+// 'need' = not owned; only shown when !owned (outermost, subtlest ring).
+function setCardGlow(card,states){
+  var parts=[];
+  if(states.avail)parts.push('0 0 0 2px #FF8C00');
+  if(states.zap)parts.push('0 0 0 '+(2+parts.length*2)+'px #bc8cff');
+  if(states.wub)parts.push('0 0 0 '+(2+parts.length*2)+'px #56b4e9');
+  if(states.need)parts.push('0 0 0 '+(2+parts.length*2)+'px var(--epi)');
+  card.style.boxShadow=parts.join(',');
 }
 
 // IMAGES
@@ -735,6 +746,26 @@ function monImgWithCtx(name,island,size){
 }
 function elemImg(el){
   return '<img src="images/elements/'+el.toLowerCase()+'.png" class="esig" onerror="this.style.opacity=0" alt="'+el+'" title="'+el+'">';
+}
+// Returns true for any flex egg key — anything ending with "Flex" or containing "Flex ("
+function isFlex(egg){return /\bflex\b/i.test(egg);}
+// Rarities in MSM — Common, Rare, Epic only. Everything else is an element or class.
+var FLEX_RARITIES={common:1,rare:1,epic:1};
+// Parse a flex egg key into {rarity, element, count}
+// "Rare Flex (Fire)(3)" → {rarity:"Rare",  element:"Fire",    count:3}
+// "Rare Flex (Water)"   → {rarity:"Rare",  element:"Water",   count:null}
+// "Mythical Flex"       → {rarity:null,    element:"Mythical",count:null}  ← Mythical is an element
+function parseFlex(egg){
+  var m=egg.match(/^(\w+)\s+flex(?:\s*\(([^)]+)\))?(?:\s*\((\d+)\))?/i);
+  if(!m)return{rarity:null,element:null,count:null};
+  var word=m[1].toLowerCase();
+  var cap=m[1].charAt(0).toUpperCase()+m[1].slice(1).toLowerCase();
+  var isRarity=!!FLEX_RARITIES[word];
+  return{
+    rarity:isRarity?cap:null,
+    element:isRarity?(m[2]||null):cap,
+    count:m[3]?parseInt(m[3]):null
+  };
 }
 
 // SIDEBAR
@@ -810,17 +841,14 @@ function renderCollection(){
   var isZap=!!DB.zapping[key]&&!DB.islands[key];
   var allMons=isZap?DB.zapping[key]:getIslandMons(key);
   var ownedCount=allMons.filter(function(m){return isOwned(key,m.n);}).length;
-  var neededCount=Object.values(S.needed[key]||{}).filter(Boolean).length;
   var pct=allMons.length?Math.round(ownedCount/allMons.length*100):0;
 
   var st=document.createElement("div");st.className="stats";
   st.innerHTML='<div class="sc sc-owned"><div class="sc-lbl">Owned</div><div class="sc-val">'+ownedCount+'</div><div class="sc-sub">of '+allMons.length+'</div></div>'+
     '<div class="sc"><div class="sc-lbl">Not Yet Owned</div><div class="sc-val">'+(allMons.length-ownedCount)+'</div></div>'+
-    '<div class="sc sc-need"><div class="sc-lbl">Marked Needed</div><div class="sc-val">'+neededCount+'</div></div>'+
     '<div class="sc"><div class="sc-lbl">Complete</div><div class="sc-val">'+pct+'%</div></div>';
   c.appendChild(st);
 
-  // Progress bar
   var prog=document.createElement("div");prog.className="col-prog";
   prog.innerHTML='<div class="pbar"><div class="pfill'+(pct>=100?" done":"")+'" style="width:'+pct+'%"></div></div>';
   c.appendChild(prog);
@@ -835,60 +863,55 @@ function renderCollection(){
     '<button class="rbtn'+(S.colRarity==="C"?" on-C":"")+'" id="rc_C">Common</button>'+
     '<button class="rbtn'+(S.colRarity==="R"?" on-R":"")+'" id="rc_R">Rare</button>'+
     '<button class="rbtn'+(S.colRarity==="E"?" on-E":"")+'" id="rc_E">Epic</button>'+
-    '<label><input type="checkbox" id="rc_HO"'+(S.colHideOwned?" checked":"")+'>  Hide owned</label>'+
-    '<label><input type="checkbox" id="rc_SN"'+(S.colNeedOnly?" checked":"")+'>  Needed only</label>';
+    '<label><input type="checkbox" id="rc_HO"'+(S.colHideOwned?" checked":"")+'>  Hide owned</label>';
   c.appendChild(fr);
   document.getElementById("rc_C").onclick=function(){S.colRarity=S.colRarity==="C"?"":"C";saveS();renderAll();};
   document.getElementById("rc_R").onclick=function(){S.colRarity=S.colRarity==="R"?"":"R";saveS();renderAll();};
   document.getElementById("rc_E").onclick=function(){S.colRarity=S.colRarity==="E"?"":"E";saveS();renderAll();};
   document.getElementById("rc_HO").onchange=function(){S.colHideOwned=this.checked;saveS();renderAll();};
-  document.getElementById("rc_SN").onchange=function(){S.colNeedOnly=this.checked;saveS();renderAll();};
 
   var list=allMons.slice();
   if(S.colRarity)list=list.filter(function(m){return rar(m.n)===S.colRarity;});
   if(S.colHideOwned)list=list.filter(function(m){return !isOwned(key,m.n);});
-  if(S.colNeedOnly)list=list.filter(function(m){return isNeeded(key,m.n);});
 
   if(!list.length){var emp=document.createElement("div");emp.className="empty";emp.textContent="No monsters match the filters.";c.appendChild(emp);return;}
 
   var grid=document.createElement("div");grid.className="mgrid";
   list.forEach(function(m){
     var owned=isOwned(key,m.n);
-    var need=isNeeded(key,m.n);
-    var zn=zapNeeded(m.n);
-    var wbn=wubNeededFor(m.n);
+    var zn=zapNeeded(m.n);  // [{name,still}]
+    // Only show wubbox badge for slots on THIS island
+    var wbn=wubboxUnboxedFor(m.n).filter(function(s){return s.island===key;});
     var r=rar(m.n);
     var db=dbEntry(m.n);
     var elems=db?db.e:[];
     var avKey2=db?db.n+" ("+db.r+")":"";
     var isAvCard=avKey2?isAvailNow(avKey2):false;
     var card=document.createElement("div");
-    card.className="mc"+(owned?" owned":"")+(isAvCard?" avail-now":"")+(need?" needed":"")+(zn.length&&!owned?" zneed":"")+(wbn.length&&!owned?" wneed":"");
+    card.className="mc"+(owned?" owned":"");
+    setCardGlow(card,{avail:isAvCard,zap:!!zn.length,wub:!!wbn.length,need:!owned});
+    // Build zap badges: one per tracked target, showing name + still-needed count
+    var zapBadges=zn.slice(0,3).map(function(z){
+      return '<span class="bdg bdg-zap">Zap: '+z.name+' \xD7'+z.still+'</span>';
+    }).join("")+(zn.length>3?'<span class="bdg bdg-zap">+' +(zn.length-3)+' more</span>':"");
     card.innerHTML=
-      '<div class="mc-chk">✓</div>'+
-      '<button class="mc-need-btn" title="Mark as needed">'+(need?'★':'☆')+'</button>'+
       '<div class="mc-top">'+monImgWithCtx(m.n,key,42)+
         '<div class="mc-info"><div class="mc-name">'+cleanN(m.n)+'</div>'+
         '<div class="mc-elems">'+elems.slice(0,4).map(elemImg).join("")+'</div></div></div>'+
       '<div class="mc-combo">'+(m.b||(isZap?(m.e||""):""))+'</div>'+
       '<div class="mc-badges">'+bdg(r)+
         (isAvCard?'<span class="bdg bdg-avail">Available</span>':"")+
-        (need?'<span class="bdg bdg-need">Needed</span>':"")+
-        (zn.length?'<span class="bdg bdg-zap">Zap: '+zn[0]+'</span>':"")+
-        (wbn.length?'<span class="bdg bdg-wub">Wubbox</span>':"")+
+        zapBadges+
+        (wbn.length?'<span class="bdg bdg-wub">Wubbox'+(wbn.length>1?' \xD7'+wbn.length:'')+'</span>':"")+
       '</div>';
-    card.addEventListener("click",function(e){
-      if(e.target.classList.contains("mc-need-btn")||e.target.closest(".mc-need-btn")){
-        setNeeded(key,m.n,!isNeeded(key,m.n));renderAll();return;
-      }
-      if(e.shiftKey){setNeeded(key,m.n,!isNeeded(key,m.n));}
-      else{setOwned(key,m.n,!isOwned(key,m.n));}
+    card.addEventListener("click",function(){
+      setOwned(key,m.n,!isOwned(key,m.n));
       renderAll();
     });
     grid.appendChild(card);
   });
   c.appendChild(grid);
-  var hint=document.createElement("div");hint.className="hint";hint.textContent="Click = owned  ·  ☆ or Shift+click = mark needed";c.appendChild(hint);
+  var hint=document.createElement("div");hint.className="hint";hint.textContent="Click to mark owned / unowned";c.appendChild(hint);
 }
 
 // BREEDING
@@ -1214,20 +1237,42 @@ function renderZapping(){
         var egg=ee[0],need=ee[1];
         var sv=(z.sent&&z.sent[egg])||0,bv=(z.bred&&z.bred[egg])||0;
         var done=sv>=need,partial=!done&&(sv+bv>0);
-        var isRareFlex=/^rare flex\b/i.test(egg);
+        var flexEgg=isFlex(egg);
+        // Check if this monster is currently available (non-flex eggs only)
+        var eggAvail=false;
+        if(!flexEgg){
+          var _dbM=dbEntry(egg);
+          if(_dbM)eggAvail=isAvailNow(_dbM.n+" ("+_dbM.r+")");
+        }
         var ei=document.createElement("div");
-        if(isRareFlex){
-          var flexOn=sv>=need;
-          ei.className="egg"+(flexOn?" done":"");
-          ei.innerHTML='<div style="display:flex;align-items:center;gap:5px">'+
-            '<div class="egg-name" style="color:'+(flexOn?"var(--com)":"var(--tx)")+'">'+egg+' ×'+need+'</div>'+
-            '<button class="btn-sm flex-tog" style="font-size:11px;padding:2px 7px;'+(flexOn?'background:rgba(63,185,80,.2);border-color:var(--com);color:var(--com)':'')+
-            '" data-zid="'+id+'" data-egg="'+egg+'" data-need="'+need+'">'+(flexOn?"✓ Got it":"Get it")+'</button></div>';
-        } else {
+        if(flexEgg){
+          var fp=parseFlex(egg);
+          // Element icon: always show the element image if we have one (Mythical, Fire, Water etc.)
+          var flexIcon=fp.element?'<img src="images/elements/'+fp.element.toLowerCase()+'.png" style="width:22px;height:22px;object-fit:contain;flex-shrink:0" onerror="this.style.opacity=0" alt="'+fp.element+'" title="'+fp.element+'">':'';
+          // Label: "Rare Flex (Fire) (3 elem)" or "Mythical Flex"
+          var flexLabel=fp.rarity&&fp.element?(fp.rarity+' Flex ('+fp.element+')'+(fp.count?' ('+fp.count+' elem)':''))
+                       :fp.element?(fp.element+' Flex')
+                       :fp.rarity?(fp.rarity+' Flex'):'Flex';
+          // Hint: "Any Rare with Fire, 3 elements" or "Any monster with Mythical element"
+          var flexHint=fp.rarity&&fp.element?('Any '+fp.rarity+' with '+fp.element+(fp.count?', '+fp.count+' elements':''))
+                      :fp.element?('Any monster with '+fp.element+' element')
+                      :fp.rarity?('Any '+fp.rarity+' monster'):'';
           ei.className="egg"+(done?" done":partial?" partial":"");
           ei.innerHTML='<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px">'+
+            flexIcon+
+            '<div class="egg-name" style="color:'+(done?"var(--com)":partial?"var(--epi)":"var(--tx)")+'">'+flexLabel+' \xD7'+need+
+            '<div style="font-size:10px;color:var(--tx3);font-weight:400">'+flexHint+'</div></div></div>'+
+            '<div class="egg-inputs">'+
+            '<div class="ein"><label>Sent</label><input type="number" min="0" max="'+need+'" value="'+sv+'" data-zid="'+id+'" data-egg="'+egg+'" data-type="sent"></div>'+
+            '<div class="ein"><label>Bred</label><input type="number" min="0" max="'+need+'" value="'+bv+'" data-zid="'+id+'" data-egg="'+egg+'" data-type="bred"></div>'+
+            '</div>';
+        } else {
+          ei.className="egg"+(done?" done":partial?" partial":"")+(eggAvail&&!done?" egg-avail":"");
+          ei.innerHTML='<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px">'+
             monImg(egg,22)+
-            '<div class="egg-name" style="color:'+(done?"var(--com)":partial?"var(--epi)":"var(--tx)")+'">'+egg+' ×'+need+'</div></div>'+
+            '<div class="egg-name" style="color:'+(done?"var(--com)":partial?"var(--epi)":eggAvail?"#FF8C00":"var(--tx)")+'">'+egg+' \xD7'+need+
+            (eggAvail&&!done?' <span style="font-size:9px;opacity:.8">Available!</span>':'')+
+            '</div></div>'+
             '<div class="egg-inputs">'+
             '<div class="ein"><label>Sent</label><input type="number" min="0" max="'+need+'" value="'+sv+'" data-zid="'+id+'" data-egg="'+egg+'" data-type="sent"></div>'+
             '<div class="ein"><label>Bred</label><input type="number" min="0" max="'+need+'" value="'+bv+'" data-zid="'+id+'" data-egg="'+egg+'" data-type="bred"></div>'+
@@ -1244,27 +1289,6 @@ function renderZapping(){
     // Remove button
     var btn=ev.target.closest(".zrm-btn");
     if(btn){var zid=btn.getAttribute("data-zid");if(zid&&S.zapTracked[zid]){delete S.zapTracked[zid];S.zapOrder=S.zapOrder.filter(function(i){return i!==zid;});saveS();renderAll();}}
-    // Rare Flex toggle
-    var ftog=ev.target.closest(".flex-tog");
-    if(ftog){
-      var zid=ftog.getAttribute("data-zid"),egg=ftog.getAttribute("data-egg"),need=parseInt(ftog.getAttribute("data-need"))||1;
-      if(zid&&S.zapTracked[zid]){
-        if(!S.zapTracked[zid].sent)S.zapTracked[zid].sent={};
-        var cur=(S.zapTracked[zid].sent[egg]||0);
-        S.zapTracked[zid].sent[egg]=cur>=need?0:need;
-        saveS();updateZapCard(zid);
-        // Re-render just this toggle button
-        ftog.classList.toggle("done");
-        var on=S.zapTracked[zid].sent[egg]>=need;
-        ftog.textContent=on?"✓ Got it":"Get it";
-        ftog.style.background=on?"rgba(63,185,80,.2)":"";
-        ftog.style.borderColor=on?"var(--com)":"";
-        ftog.style.color=on?"var(--com)":"";
-        var nameEl=ftog.previousElementSibling;
-        if(nameEl)nameEl.style.color=on?"var(--com)":"var(--tx)";
-        ftog.closest(".egg").className="egg"+(on?" done":"");
-      }
-    }
   });
   c.addEventListener("change",function(ev){
     var t=ev.target;
@@ -1315,8 +1339,9 @@ function updateZapCard(zid){
     var need2=eggKey?eggs[eggKey]:0;
     if(!need2){ei.className="egg";nameEl.style.color="var(--tx)";return;}
     var done=sv2>=need2,partial=!done&&(sv2+bv2>0);
-    ei.className="egg"+(done?" done":partial?" partial":"");
-    nameEl.style.color=done?"var(--com)":partial?"var(--epi)":"var(--tx)";
+    var wasAvail=ei.classList.contains("egg-avail");
+    ei.className="egg"+(done?" done":partial?" partial":"")+(wasAvail&&!done?" egg-avail":"");
+    nameEl.style.color=done?"var(--com)":partial?"var(--epi)":wasAvail&&!done?"#FF8C00":"var(--tx)";
   });
 }
 
@@ -1369,6 +1394,18 @@ function renderWubbox(){
   var boxedCount=bList.filter(function(mn){return boxed[mn];}).length;
   var pct=bList.length?Math.round(boxedCount/bList.length*100):0;
 
+  // Wubbox header card — shows selected wubbox image + context
+  var wbImgName2=S.wbType==="epic"?"Epic Wubbox":S.wbType==="rare"?"Rare Wubbox":"Wubbox";
+  var wbHdr=document.createElement("div");
+  wbHdr.style.cssText="display:flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid var(--brd);border-radius:11px;padding:11px 14px;margin-bottom:13px";
+  wbHdr.innerHTML=
+    monImgWithCtx(wbImgName2,S.wbType==="epic"?key:"",56)+
+    '<div>'+
+      '<div style="font-size:15px;font-weight:700">'+key+'</div>'+
+      '<div style="font-size:12px;color:var(--tx2);margin-top:2px">'+(S.wbType.charAt(0).toUpperCase()+S.wbType.slice(1))+' Wubbox &nbsp;&middot;&nbsp; '+boxedCount+'/'+bList.length+' boxed</div>'+
+    '</div>';
+  c.appendChild(wbHdr);
+
   var st=document.createElement("div");st.className="stats";
   st.innerHTML=
     '<div class="sc sc-owned"><div class="sc-lbl">Boxed</div><div class="sc-val">'+boxedCount+'</div><div class="sc-sub">of '+bList.length+'</div></div>'+
@@ -1389,30 +1426,28 @@ function renderWubbox(){
     var v=boxedCount!==bList.length;bList.forEach(function(mn){boxed[mn]=v?1:0;});saveS();renderAll();
   });
   actRow.appendChild(allBtn);
-  var wbHint=document.createElement("span");wbHint.className="hint";wbHint.style.marginLeft="6px";
-  wbHint.textContent="Click → boxed  \xB7  ★ → needed for breeding";
-  actRow.appendChild(wbHint);
+  var wbHint2=document.createElement("span");wbHint2.className="hint";wbHint2.style.marginLeft="6px";
+  wbHint2.textContent="Click a card to mark as boxed / unboxed";
+  actRow.appendChild(wbHint2);
   c.appendChild(actRow);
 
   var grid=document.createElement("div");grid.className="mgrid";
   bList.forEach(function(mn){
     var isBoxed=!!boxed[mn];
-    var isNeed=isWubNeeded(key,S.wbType,mn);
+    var dbM=dbEntry(mn);
+    var r2=rar(mn);
+    var elems2=dbM?(dbM.e||[]):[];
     var card=document.createElement("div");
-    card.className="mc"+(isBoxed?" owned":"")+(isNeed?" wneed":"");
+    card.className="mc"+(isBoxed?" owned":"");
     card.innerHTML=
-      '<div class="mc-chk">✓</div>'+
-      '<button class="mc-need-btn" title="'+(isNeed?"Unmark":"Mark as")+' needed">'+(isNeed?'★':'☆')+'</button>'+
       '<div class="mc-top">'+monImgWithCtx(mn,key,42)+
         '<div class="mc-info">'+
-          '<div class="mc-name">'+mn+'</div>'+
-          (isNeed?'<div style="margin-top:3px"><span class="bdg bdg-wub">Needed</span></div>':"")+
+          '<div class="mc-name">'+cleanN(mn)+'</div>'+
+          '<div class="mc-elems">'+elems2.slice(0,4).map(elemImg).join("")+'</div>'+
         '</div>'+
-      '</div>';
-    card.addEventListener("click",function(e){
-      if(e.target.classList.contains("mc-need-btn")||e.target.closest(".mc-need-btn")){
-        setWubNeeded(key,S.wbType,mn,!isNeed);renderAll();return;
-      }
+      '</div>'+
+      '<div class="mc-badges">'+bdg(r2)+'</div>';
+    card.addEventListener("click",function(){
       boxed[mn]=isBoxed?0:1;saveS();renderAll();
     });
     grid.appendChild(card);
@@ -1628,13 +1663,18 @@ function renderDatabase(){
   document.getElementById("dbElem").onchange=function(){S.dbElem=this.value;saveS();renderAll();};
   document.getElementById("dbIsl").onchange=function(){S.dbIsland=this.value;saveS();renderAll();};
 
-  // Status filter
+  // Status filter — multi-select toggles
   var sfr=document.createElement("div");sfr.className="frow";sfr.style.marginTop="6px";
-  [["","All"],["avail","Available Now"],["needed","Needed"],["zap","For Zapping"],["wub","For Wubbox"]].forEach(function(kv){
+  var _ds=S.dbStatuses||{};
+  [["avail","Available Now"],["needed","Needed"],["zap","For Zapping"],["wub","For Wubbox"]].forEach(function(kv){
     var b=document.createElement("button");
-    b.className="rbtn"+(S.dbStatus===kv[0]?" on":"");
+    b.className="rbtn"+(_ds[kv[0]]?" on":"");
     b.textContent=kv[1];
-    b.addEventListener("click",function(){S.dbStatus=kv[0];saveS();renderAll();});
+    b.addEventListener("click",function(){
+      if(!S.dbStatuses)S.dbStatuses={avail:false,needed:false,zap:false,wub:false};
+      S.dbStatuses[kv[0]]=!S.dbStatuses[kv[0]];
+      saveS();renderAll();
+    });
     sfr.appendChild(b);
   });
   c.appendChild(sfr);
@@ -1661,21 +1701,30 @@ function renderDatabase(){
   if(S.dbIsland)list=list.filter(function(m){return m.i.indexOf(S.dbIsland)>-1||(m.c==="Celestial"&&S.dbIsland==="Celestial Island");});
 
   // Attach computed status to each monster, then apply status filter
+  var _anyStatus=S.dbStatuses&&(S.dbStatuses.avail||S.dbStatuses.needed||S.dbStatuses.zap||S.dbStatuses.wub);
   list=list.filter(function(m){
     var legN=m.n+" ("+m.r+")";
     var cl=cleanN(m.n).toLowerCase();
     m._dbIsAvail=isAvailNow(legN);
+    // Missing islands: any appearance where this monster is not yet owned on that island
     m._dbMissingIslands=(m.islands||[]).filter(function(a){
-      return a.combo&&a.combo.length&&!isOwned(a.island,legN);
-    }).map(function(a){return a.island;});
+      return !isOwned(a.island,legN)&&!isOwned(a.island,m.n);
+    }).map(function(a){return a.island;}).filter(function(v,i,arr){return arr.indexOf(v)===i;});
+    // Celestials have empty islands[] — synthesise from zapTargets
+    if(m.c==="Celestial"){
+      var celOwned=isOwned("Celestial Island",legN)||isOwned("Celestial Island",m.n);
+      if(!celOwned&&m._dbMissingIslands.indexOf("Celestial Island")===-1)
+        m._dbMissingIslands.push("Celestial Island");
+    }
     m._dbZapTags=_zapEggMap[cl]||null;
     m._dbWubSlots=wubboxUnboxedFor(m.n);
-    if(!S.dbStatus)return true;
-    if(S.dbStatus==="avail")return m._dbIsAvail;
-    if(S.dbStatus==="needed")return m._dbMissingIslands.length>0||(m._dbZapTags&&m._dbZapTags.length>0)||(m._dbWubSlots&&m._dbWubSlots.length>0);
-    if(S.dbStatus==="zap")return !!(m._dbZapTags&&m._dbZapTags.length);
-    if(S.dbStatus==="wub")return !!(m._dbWubSlots&&m._dbWubSlots.length);
-    return true;
+    if(!_anyStatus)return true;
+    var matches=false;
+    if(S.dbStatuses.avail&&m._dbIsAvail)matches=true;
+    if(S.dbStatuses.needed&&(m._dbMissingIslands.length>0||(m._dbZapTags&&m._dbZapTags.length>0)||(m._dbWubSlots&&m._dbWubSlots.length>0)))matches=true;
+    if(S.dbStatuses.zap&&m._dbZapTags&&m._dbZapTags.length>0)matches=true;
+    if(S.dbStatuses.wub&&m._dbWubSlots&&m._dbWubSlots.length>0)matches=true;
+    return matches;
   });
 
   var cnt=document.createElement("div");cnt.className="cnt";cnt.textContent=list.length+" of "+DB.monsters.length+" monsters";c.appendChild(cnt);
@@ -1760,7 +1809,7 @@ function renderDatabase(){
       });
       if(zt&&zt.requirements&&zt.requirements.length){
         var reqStr=zt.requirements
-          .filter(function(req){return req.monster.toLowerCase().indexOf("rare flex")===-1;})
+          .filter(function(req){return !isFlex(req.monster);})
           .map(function(req){return req.monster+" \xD7"+req.eggs;})
           .join(", ");
         if(reqStr)parts.push('<span style="font-size:11px;color:var(--tx2)">'+reqStr+'</span>');

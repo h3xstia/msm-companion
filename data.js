@@ -8140,9 +8140,9 @@ window.DB = {
       { "monster": "Riff", "eggs": 2 },
       { "monster": "Shellbeat", "eggs": 2 },
       { "monster": "Carillong", "eggs": 1 },
-      { "monster": "Rare Flex (Water)", "eggs": 2 },
-      { "monster": "Rare Flex (Water)", "eggs": 1 },
-      { "monster": "Rare Flex (Water)", "eggs": 1 }
+      { "monster": "Rare Flex (Water)(2)", "eggs": 2 },
+      { "monster": "Rare Flex (Water)(3)", "eggs": 1 },
+      { "monster": "Rare Flex (Water)(4)", "eggs": 1 }
     ]
   },
   {
@@ -8193,8 +8193,8 @@ window.DB = {
       { "monster": "Fiddlement", "eggs": 2 },
       { "monster": "Blow't", "eggs": 1 },
       { "monster": "Schmoochle", "eggs": 1 },
-      { "monster": "Rare Flex (Light)", "eggs": 2 },
-      { "monster": "Rare Flex (Fire)", "eggs": 1 }
+      { "monster": "Rare Flex (Light)(2)", "eggs": 2 },
+      { "monster": "Rare Flex (Fire)(3)", "eggs": 1 }
     ]
   },
   {
@@ -8236,9 +8236,9 @@ window.DB = {
       { "monster": "Riff", "eggs": 2 },
       { "monster": "Quarrister", "eggs": 2 },
       { "monster": "Ffidyll", "eggs": 1 },
-      { "monster": "Rare Flex (Cold)", "eggs": 2 },
-      { "monster": "Rare Flex (Cold)", "eggs": 1 },
-      { "monster": "Rare Flex (Cold)", "eggs": 1 }
+      { "monster": "Rare Flex (Cold)(2)", "eggs": 2 },
+      { "monster": "Rare Flex (Cold)(3)", "eggs": 1 },
+      { "monster": "Rare Flex (Cold)(4)", "eggs": 1 }
     ]
   },
   {
@@ -8280,9 +8280,9 @@ window.DB = {
       { "monster": "Shellbeat", "eggs": 2 },
       { "monster": "Quarrister", "eggs": 2 },
       { "monster": "Blabbit", "eggs": 1 },
-      { "monster": "Rare Flex (Plant)", "eggs": 2 },
-      { "monster": "Rare Flex (Plant)", "eggs": 1 },
-      { "monster": "Rare Flex (Plant)", "eggs": 1 }
+      { "monster": "Rare Flex (Plant)(2)", "eggs": 2 },
+      { "monster": "Rare Flex (Plant)(3)", "eggs": 1 },
+      { "monster": "Rare Flex (Plant)(4)", "eggs": 1 }
     ]
   },
   {
@@ -8332,8 +8332,8 @@ window.DB = {
       { "monster": "Banjaw", "eggs": 2 },
       { "monster": "Plinkajou", "eggs": 1 },
       { "monster": "Spurrit", "eggs": 1 },
-      { "monster": "Rare Flex (Bone)", "eggs": 2 },
-      { "monster": "Rare Flex (Fire)", "eggs": 1 }
+      { "monster": "Rare Flex (Bone)(2)", "eggs": 2 },
+      { "monster": "Rare Flex (Fire)(3)", "eggs": 1 }
     ]
   },
   {
@@ -8378,7 +8378,7 @@ window.DB = {
       { "monster": "Sneyser", "eggs": 1 },
       { "monster": "Monculus", "eggs": 1 },
       { "monster": "Mythical Flex", "eggs": 3 },
-      { "monster": "Rare Flex (Fire)", "eggs": 2 }
+      { "monster": "Rare Flex (Fire)(4)", "eggs": 2 }
     ]
   },
   {
@@ -8455,11 +8455,11 @@ window.DB = {
       { "monster": "Tring", "eggs": 1 },
       { "monster": "Sneyser", "eggs": 1 },
       { "monster": "Hoola", "eggs": 1 },
-      { "monster": "Rare Flex (Air)", "eggs": 1 },
-      { "monster": "Rare Flex (Plant)", "eggs": 1 },
-      { "monster": "Rare Flex (Earth)", "eggs": 1 },
-      { "monster": "Rare Flex (Water)", "eggs": 1 },
-      { "monster": "Rare Flex (Cold)", "eggs": 1 }
+      { "monster": "Rare Flex (Air)(4)", "eggs": 1 },
+      { "monster": "Rare Flex (Plant)(4)", "eggs": 1 },
+      { "monster": "Rare Flex (Earth)(4)", "eggs": 1 },
+      { "monster": "Rare Flex (Water)(4)", "eggs": 1 },
+      { "monster": "Rare Flex (Cold)(4)", "eggs": 1 }
     ]
   },
   {
@@ -8509,8 +8509,8 @@ window.DB = {
       { "monster": "Clavi Gnat", "eggs": 2 },
       { "monster": "Pladdie", "eggs": 1 },
       { "monster": "Boo'qwurm", "eggs": 1 },
-      { "monster": "Rare Flex (Faerie)", "eggs": 2 },
-      { "monster": "Rare Flex (Fire)", "eggs": 1 }
+      { "monster": "Rare Flex (Faerie)(2)", "eggs": 2 },
+      { "monster": "Rare Flex (Fire)(3)", "eggs": 1 }
     ]
   },
   {
@@ -8558,9 +8558,10 @@ window.DB = {
       { "monster": "Viveine", "eggs": 1 },
       { "monster": "Clavavera", "eggs": 1 },
       { "monster": "Whiz-bang", "eggs": 1 },
-      { "monster": "Rare Flex (Psychic)", "eggs": 1 },
-      { "monster": "Rare Flex (Light)", "eggs": 1 },
-      { "monster": "Rare Flex (Faerie)", "eggs": 1 }
+      { "monster": "Rare Flex (Psychic)(2)", "eggs": 1 },
+      { "monster": "Rare Flex (Bone)(2)", "eggs": 1 },
+      { "monster": "Rare Flex (Light)(2)", "eggs": 1 },
+      { "monster": "Rare Flex (Faerie)(2)", "eggs": 1 }
     ]
   },
   {
@@ -8602,9 +8603,9 @@ window.DB = {
       { "monster": "Riff", "eggs": 2 },
       { "monster": "Shellbeat", "eggs": 2 },
       { "monster": "Punkleton", "eggs": 1 },
-      { "monster": "Rare Flex (Earth)", "eggs": 2 },
-      { "monster": "Rare Flex (Earth)", "eggs": 1 },
-      { "monster": "Rare Flex (Earth)", "eggs": 1 }
+      { "monster": "Rare Flex (Earth)(2)", "eggs": 2 },
+      { "monster": "Rare Flex (Earth)(3)", "eggs": 1 },
+      { "monster": "Rare Flex (Earth)(4)", "eggs": 1 }
     ]
   },
   {
@@ -8654,8 +8655,8 @@ window.DB = {
       { "monster": "Periscorp", "eggs": 2 },
       { "monster": "Gloptic", "eggs": 1 },
       { "monster": "Gobbleygourd", "eggs": 1 },
-      { "monster": "Rare Flex (Psychic)", "eggs": 2 },
-      { "monster": "Rare Flex (Fire)", "eggs": 1 }
+      { "monster": "Rare Flex (Psychic)(2)", "eggs": 2 },
+      { "monster": "Rare Flex (Fire)(3)", "eggs": 1 }
     ]
   },
   {
@@ -8697,9 +8698,9 @@ window.DB = {
       { "monster": "Shellbeat", "eggs": 2 },
       { "monster": "Quarrister", "eggs": 2 },
       { "monster": "Yool", "eggs": 1 },
-      { "monster": "Rare Flex (Air)", "eggs": 2 },
-      { "monster": "Rare Flex (Air)", "eggs": 1 },
-      { "monster": "Rare Flex (Air)", "eggs": 1 }
+      { "monster": "Rare Flex (Air)(2)", "eggs": 2 },
+      { "monster": "Rare Flex (Air)(3)", "eggs": 1 },
+      { "monster": "Rare Flex (Air)(4)", "eggs": 1 }
     ]
   }
   ],
