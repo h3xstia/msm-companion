@@ -2700,6 +2700,18 @@ window.DB = {
     ]
   },
   {
+    "n": "Epic Fluoress",
+    "r": "Epic",
+    "c": "Magical",
+    "e": ["Light"],
+    "islands": [
+      { "island": "Light Island", "combo": ["Blow't", "Gob"], "time": "19h 16m", "enhanced": "14h 27m" },
+      { "island": "Magical Sanctum", "combo": ["Enchantling", "Cahoot"], "obtain": "Teleport", "time": "19h 16m", "enhanced": "14h 27m" },
+      { "island": "Magical Nexus", "combo": null, "obtain": "Teleport" },
+      { "island": "Mirror Light Island", "combo": ["Blow't", "Gob"], "time": "19h 16m", "enhanced": "14h 27m" }
+    ]
+  },
+  {
     "n": "Epic Floot Fly",
     "r": "Epic",
     "c": "Magical",
@@ -4319,6 +4331,16 @@ window.DB = {
     "islands": [
       { "island": "Ethereal Workshop", "combo": ["Tuned Up Plasma (Rare)", "Tuned Up Shadow (Rare)", "Tuned Up Mech (Rare)", "Tuned Up Crystal (Rare)"], "obtain": "Synthesis" },
       { "island": "Plasma Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 21h" }
+    ]
+  },
+  {
+    "n": "Rare Vhenshun",
+    "r": "Rare",
+    "c": "Ethereal",
+    "e": ["Plasma", "Shadow", "Mech", "Poison"],
+    "islands": [
+      { "island": "Ethereal Workshop", "combo": ["Tuned Up Plasma (Rare)", "Tuned Up Shadow (Rare)", "Tuned Up Mech (Rare)", "Tuned Up Poison (Rare)"], "obtain": "Synthesis" },
+      { "island": "Mech Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 21h" }
     ]
   },
   {
