@@ -4447,7 +4447,7 @@ window.DB = {
     "n": "The Inflatterer (Major)",
     "r": "Common",
     "c": "Paironormal",
-    "e": ["Hoax", "Depth"],
+    "e": ["Hoax", "Depths"],
     "islands": [
       { "island": "Major Paironormal Carnival", "combo": ["Owlesque (Major)", "Shhimmer (Major)"], "time": "1d 21h", "enhanced": "1d 9h 45m" }
     ]
