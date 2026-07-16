@@ -1,7 +1,7 @@
 // MSM Companion — Game Data
 // ─────────────────────────────────────────────────────────────
 //
-// HOW TO ADD A NEW MONSTER
+// HOW TO ADD A NEW MONSTER 
 // 1. Copy an existing entry from the monsters array below.
 // 2. Update: n (name), r (rarity), c (class), e (elements).
 // 3. Add one entry per island inside "islands": [...].
