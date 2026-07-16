@@ -3468,9 +3468,20 @@ window.DB = {
     "c": "Magical",
     "e": ["Plant", "Fire", "Light"],
     "islands": [
-      { "island": "Light Island", "combo": ["Spytrap", "Flowah"], "time": "2d 5h 5m", "enhanced": "1d 15h 48m 45s" },
+      { "island": "Light Island", "combo": ["Clavi Gnat", "HippityHop"], "time": "2d 5h 5m", "enhanced": "1d 15h 48m 45s" },
       { "island": "Magical Nexus", "combo": null, "obtain": "Teleport" },
-      { "island": "Mirror Light Island", "combo": ["Spytrap", "Flowah"], "time": "2d 5h 5m", "enhanced": "1d 15h 48m 45s" }
+      { "island": "Mirror Light Island", "combo": ["Clavi Gnat", "HippityHop"], "time": "2d 5h 5m", "enhanced": "1d 15h 48m 45s" }
+    ]
+  },
+    {
+    "n": "Epic Cantorell",
+    "r": "Epic",
+    "c": "Magical",
+    "e": ["Earth", "Cold", "Faerie"],
+    "islands": [
+      { "island": "Faerie Island", "combo": ["Squot", "Noggin"], "time": "2d 12h 32m", "enhanced": "1d 21h 24m" },
+      { "island": "Magical Nexus", "combo": null, "obtain": "Teleport" },
+      { "island": "Mirror Faerie Island", "combo": ["Squot", "Noggin"], "time": "2d 12h 32m", "enhanced": "1d 21h 24m" }
     ]
   },
   {
@@ -4433,6 +4444,15 @@ window.DB = {
     ]
   },
   {
+    "n": "The Inflatterer (Major)",
+    "r": "Common",
+    "c": "Paironormal",
+    "e": ["Hoax", "Depth"],
+    "islands": [
+      { "island": "Major Paironormal Carnival", "combo": ["Owlesque (Major)", "Shhimmer (Major)"], "time": "1d 21h", "enhanced": "1d 9h 45m" }
+    ]
+  },
+  {
     "n": "Jerm (Major)",
     "r": "Common",
     "c": "Paironormal",
@@ -4529,6 +4549,15 @@ window.DB = {
     "e": ["Hoax", "Ruin"],
     "islands": [
       { "island": "Minor Paironormal Carnival", "combo": ["Dakktyl (Major)"], "obtain": "Fuging", "time": "1d 21h", "enhanced": "22h" }
+    ]
+  },
+  {
+    "n": "The Inflatterer (Minor)",
+    "r": "Common",
+    "c": "Paironormal",
+    "e": ["Hoax", "Depths"],
+    "islands": [
+      { "island": "Minor Paironormal Carnival", "combo": ["The Inflatterer (Major)"], "obtain": "Fuging", "time": "1d 21h", "enhanced": "22h" }
     ]
   },
   {
@@ -6183,6 +6212,15 @@ window.DB = {
     "e": ["Dream", "Mythical"],
     "islands": [
       { "island": "Mythical Island", "combo": ["Cataliszt", "Strombonin"], "time": "2d 19h 30m", "enhanced": "2d 2h 37m 30s" }
+    ]
+  },
+  {
+    "n": "Epic Wheezel",
+    "r": "Epic",
+    "c": "Mythical",
+    "e": ["Dream", "Mythical"],
+    "islands": [
+      { "island": "Mythical Island", "combo": ["Cataliszt", "Yawstrich"], "time": "2d 18h 23m", "enhanced": "2d 1h 47m 15s" }
     ]
   },
   {
