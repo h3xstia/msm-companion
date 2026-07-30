@@ -2492,8 +2492,7 @@ function _simElem(m){
 var _SIM_REST={
   "Ethereal":{isl:"Ethereal Island",maxEl:2},
   "Paironormal":{isl:"Major Paironormal Carnival",maxEl:4},
-  "Seasonal":{isl:"Seasonal Shanty",maxEl:2},
-  "Mythical":{isl:"Mythical Island",maxEl:2}
+  "Seasonal":{isl:"Seasonal Shanty",maxEl:2}
 };
 function _simBreedable(a){
   if(!Array.isArray(a.combo)||!a.combo.length)return false;
@@ -2505,8 +2504,9 @@ function _simTok(tok,par){
   if(par.n===tok)return true;
   if(tok==="Any Triple"){var el=(par.e||[]).length;return el===3&&(par.c==="Natural"||par.c==="Fire"||par.c==="Magical"||par.c==="Paironormal");}
   var mm=tok.match(/^Any\s+(.+?)\s+Triple$/i);
-  if(mm){var kw=mm[1];if(kw.toLowerCase()==="fire")return(par.e||[]).length===3&&par.c==="Fire";return(par.e||[]).length===3&&(par.e||[]).indexOf(kw)>-1;}
+  if(mm){var kw=mm[1];if(kw.toLowerCase()==="fire")return(par.e||[]).length===3&&par.c==="Fire";var el=(par.e||[]).length;if(par.c==="Magical")return(el===2||el===3)&&(par.e||[]).indexOf(kw)>-1;return el===3&&(par.e||[]).indexOf(kw)>-1;}
   if(/single\s+ethereal/i.test(tok))return par.c==="Ethereal"&&(par.e||[]).length===1;
+  if(/any\s+single\s+mythical/i.test(tok))return par.c==="Mythical"&&(par.e||[]).length===1;
   if(/any\s+monster/i.test(tok))return false;
   return false;
 }
@@ -2550,7 +2550,7 @@ function computeOffspring(p1n,p2n){
         var p2ok=(p2.islands||[]).some(function(a){return a.island===rest.isl;});
         if(p1ok&&p2ok){
           var re=null;(m.islands||[]).forEach(function(a){if(a.island===rest.isl&&!re)re=a;});
-          if(re)found[rest.isl]=re;
+          if(re&&_simBreedable(re))found[rest.isl]=re;
         }
       }
     }
