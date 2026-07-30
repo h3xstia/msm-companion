@@ -3468,9 +3468,9 @@ window.DB = {
     "c": "Magical",
     "e": ["Plant", "Fire", "Light"],
     "islands": [
-      { "island": "Light Island", "combo": ["Clavi Gnat", "HippityHop"], "time": "2d 5h 5m", "enhanced": "1d 15h 48m 45s" },
+      { "island": "Light Island", "combo": ["Spytrap", "Flowah"], "time": "2d 5h 5m", "enhanced": "1d 15h 48m 45s" },
       { "island": "Magical Nexus", "combo": null, "obtain": "Teleport" },
-      { "island": "Mirror Light Island", "combo": ["Clavi Gnat", "HippityHop"], "time": "2d 5h 5m", "enhanced": "1d 15h 48m 45s" }
+      { "island": "Mirror Light Island", "combo": ["Spytrap", "Flowah"], "time": "2d 5h 5m", "enhanced": "1d 15h 48m 45s" }
     ]
   },
     {
@@ -3479,9 +3479,9 @@ window.DB = {
     "c": "Magical",
     "e": ["Earth", "Cold", "Faerie"],
     "islands": [
-      { "island": "Faerie Island", "combo": ["Squot", "Noggin"], "time": "2d 12h 32m", "enhanced": "1d 21h 24m" },
+      { "island": "Faerie Island", "combo": ["Clavi Gnat", "HippityHop"], "time": "2d 12h 32m", "enhanced": "1d 21h 24m" },
       { "island": "Magical Nexus", "combo": null, "obtain": "Teleport" },
-      { "island": "Mirror Faerie Island", "combo": ["Squot", "Noggin"], "time": "2d 12h 32m", "enhanced": "1d 21h 24m" }
+      { "island": "Mirror Faerie Island", "combo": ["Clavi Gnat", "HippityHop"], "time": "2d 12h 32m", "enhanced": "1d 21h 24m" }
     ]
   },
   {

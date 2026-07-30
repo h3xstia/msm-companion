@@ -1627,8 +1627,8 @@ function renderAvailAddList(){
 }
 function removeAvail(key){delete S.avail[key];saveS();renderAll();}
 
-function syncAvailFromWiki(){
-  var btn=document.getElementById("avWikiSync");
+function syncAvailFromWiki(silent){
+  var btn=silent?null:document.getElementById("avWikiSync");
   if(btn){btn.disabled=true;btn.textContent="Syncing…";}
   var xhr=new XMLHttpRequest();
   xhr.open("GET","https://mysingingmonsters.fandom.com/api.php?action=parse&page=Breeding_Availability&format=json&origin=*&prop=text&section=1");
@@ -1638,7 +1638,7 @@ function syncAvailFromWiki(){
       var data=JSON.parse(xhr.responseText);
       var html=data.parse&&data.parse.text&&data.parse.text["*"];
       if(!html)throw new Error("Empty response from wiki");
-      // Strip the StarShop header row and the portrait row that immediately follows it
+      // Strip StarShop header row and the portrait row immediately after it
       var rows=html.split("<tr");
       var skipNext=false;
       html=rows.filter(function(row){
@@ -1662,16 +1662,17 @@ function syncAvailFromWiki(){
       });
       S.wikiSyncTime=Date.now();
       S.wikiSyncCount=matched;
+      S.wikiUnknown=skipped.length?skipped:null;
       saveS();renderAll();
-      if(skipped.length)console.log("[Wiki Sync] Unrecognised names (not in local data):",skipped);
+      if(skipped.length)console.log("[Wiki Sync] Unrecognised (add to data.js):",skipped);
     }catch(e){
-      if(btn){btn.disabled=false;btn.textContent="↻ Sync from Wiki";}
-      alert("Wiki sync failed: "+e.message);
+      if(!silent){if(btn){btn.disabled=false;btn.textContent="↻ Sync from Wiki";}alert("Wiki sync failed: "+e.message);}
+      else console.warn("[Wiki Sync] Failed:",e.message);
     }
   };
   xhr.onerror=xhr.ontimeout=function(){
-    if(btn){btn.disabled=false;btn.textContent="↻ Sync from Wiki";}
-    alert("Wiki sync failed: network error or timeout");
+    if(!silent){if(btn){btn.disabled=false;btn.textContent="↻ Sync from Wiki";}alert("Wiki sync failed: network error or timeout");}
+    else console.warn("[Wiki Sync] Network error or timeout");
   };
   xhr.send();
 }
@@ -1767,13 +1768,17 @@ function renderDatabase(){
     }
     m._dbZapTags=_zapEggMap[cl]||null;
     m._dbWubSlots=wubboxUnboxedFor(m.n);
+    // Island-scoped subsets used for both filtering and display
+    m._dbMissingHere=S.dbIsland?m._dbMissingIslands.filter(function(isl){return isl===S.dbIsland;}):m._dbMissingIslands;
+    m._dbWubHere=S.dbIsland?m._dbWubSlots.filter(function(s){return s.island===S.dbIsland;}):m._dbWubSlots;
     if(!_anyStatus)return true;
-    var matches=false;
-    if(S.dbStatuses.avail&&m._dbIsAvail)matches=true;
-    if(S.dbStatuses.needed&&(m._dbMissingIslands.length>0||(m._dbZapTags&&m._dbZapTags.length>0)||(m._dbWubSlots&&m._dbWubSlots.length>0)))matches=true;
-    if(S.dbStatuses.zap&&m._dbZapTags&&m._dbZapTags.length>0)matches=true;
-    if(S.dbStatuses.wub&&m._dbWubSlots&&m._dbWubSlots.length>0)matches=true;
-    return matches;
+    // AND logic: every active filter must match
+    var ok=true;
+    if(S.dbStatuses.avail  &&!m._dbIsAvail)ok=false;
+    if(S.dbStatuses.needed &&!m._dbMissingHere.length)ok=false;
+    if(S.dbStatuses.zap    &&!(m._dbZapTags&&m._dbZapTags.length))ok=false;
+    if(S.dbStatuses.wub    &&!m._dbWubHere.length)ok=false;
+    return ok;
   });
 
   var cnt=document.createElement("div");cnt.className="cnt";cnt.textContent=list.length+" of "+DB.monsters.length+" monsters";c.appendChild(cnt);
@@ -1908,9 +1913,9 @@ function renderDatabase(){
         tdMon.style.paddingTop="9px";
         var _sb2="";
         if(m._dbIsAvail)_sb2+='<span class="bdg" style="background:rgba(63,185,80,.2);color:var(--com)">Available</span> ';
-        if(m._dbMissingIslands&&m._dbMissingIslands.length){
+        if(m._dbMissingHere&&m._dbMissingHere.length){
           _sb2+='<div style="margin-top:2px">';
-          m._dbMissingIslands.forEach(function(isl){_sb2+='<span class="miss-tag">'+isl+'</span>';});
+          m._dbMissingHere.forEach(function(isl){_sb2+='<span class="miss-tag">'+isl+'</span>';});
           _sb2+='</div>';
         }
         if(m._dbZapTags&&m._dbZapTags.length){
@@ -1918,9 +1923,9 @@ function renderDatabase(){
           m._dbZapTags.forEach(function(zt){_sb2+='<span class="bdg bdg-zap">Zap: '+zt.name+(zt.still?' \xD7'+zt.still:'')+'</span> ';});
           _sb2+='</div>';
         }
-        if(m._dbWubSlots&&m._dbWubSlots.length){
+        if(m._dbWubHere&&m._dbWubHere.length){
           _sb2+='<div style="margin-top:2px">';
-          m._dbWubSlots.forEach(function(ws){
+          m._dbWubHere.forEach(function(ws){
             var tLabel=ws.type.charAt(0).toUpperCase()+ws.type.slice(1);
             _sb2+='<span class="bdg bdg-wub">'+ws.island+' \xB7 '+tLabel+'</span> ';
           });
@@ -2002,6 +2007,9 @@ function renderDatabase(){
 function renderAvailable(){
   if(!S.avail)S.avail={};
   purgeExpiredAvail();
+  // Auto-refresh from wiki if >30 min since last sync (silent, async)
+  var WIKI_TTL=30*60*1000;
+  if(!S.wikiSyncTime||Date.now()-S.wikiSyncTime>WIKI_TTL)syncAvailFromWiki(true);
 
   var c=makePanel();
   var wrap=document.createElement("div");wrap.className="tab on";wrap.appendChild(c);
@@ -2028,8 +2036,15 @@ function renderAvailable(){
     '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+
       '<a href="https://mysingingmonsters.fandom.com/wiki/Breeding_Availability#Currently_Available_Monsters" target="_blank" style="font-size:12px;color:var(--rar);text-decoration:none" title="MSM Wiki — currently available monsters">MSM Wiki &#8599;</a>'+
     '</div>';
-  // second hdr row for actions (rebuilt below)
   c.appendChild(hdr);
+  // Warning banner for unrecognised wiki monsters (new monsters not yet in data.js)
+  if(S.wikiUnknown&&S.wikiUnknown.length){
+    var warn=document.createElement("div");
+    warn.style.cssText="background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.35);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:#f85149";
+    warn.innerHTML='<strong>&#9888; '+S.wikiUnknown.length+' monster'+(S.wikiUnknown.length>1?'s':'')+' from the wiki not found in local data:</strong> '+
+      S.wikiUnknown.join(", ")+'<br><span style="color:var(--tx3)">Add them to data.js to track them.</span>';
+    c.appendChild(warn);
+  }
   var actRow=document.createElement("div");
   actRow.style.cssText="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap";
   actRow.innerHTML=
