@@ -66,6 +66,8 @@ select:focus,input:focus{border-color:var(--acc)}
 .bdg-R{background:rgba(88,166,255,.18);color:var(--rar)}
 .bdg-E{background:rgba(210,153,34,.18);color:var(--epi)}
 .bdg-L{background:rgba(249,117,131,.18);color:var(--leg)}
+.bdg-Y{background:rgba(255,198,0,.18);color:#ffc600}
+.bdg-A{background:rgba(255,138,0,.18);color:#ff8a00}
 .bdg-need{background:rgba(210,153,34,.2);color:var(--epi)}
 .bdg-zap{background:rgba(188,140,255,.2);color:#bc8cff}
 .bdg-wub{background:rgba(86,180,233,.18);color:#56b4e9}
@@ -620,7 +622,7 @@ function wubboxUnboxedFor(monsterName){
   Object.keys(DB.wubbox||{}).forEach(function(island){
     var wd=DB.wubbox[island]||{};
     ["common","rare","epic"].forEach(function(type){
-      var bList=wd[type]||[];
+      var bRaw=wd[type]||[];var bList=Array.isArray(bRaw)?bRaw:(bRaw.list||[]);
       var bkey=island+"__"+type;
       var boxed=(S.wubboxBoxed&&S.wubboxBoxed[bkey])||{};
       bList.forEach(function(mn){
@@ -635,9 +637,11 @@ function rar(name){
   var n=name.toLowerCase();
   if(n.startsWith("epic ")||n.indexOf("(epic)")>-1)return"E";
   if(n.startsWith("rare ")||n.indexOf("(rare)")>-1)return"R";
+  if(n.indexOf("(young)")>-1)return"Y";
+  if(n.startsWith("adult ")||n.indexOf("(adult)")>-1)return"A";
   return"C";
 }
-function rarLabel(r){return r==="E"?"Epic":r==="R"?"Rare":"Common";}
+function rarLabel(r){return r==="E"?"Epic":r==="R"?"Rare":r==="Y"?"Young":r==="A"?"Adult":"Common";}
 function cleanN(name){return name.replace(/\s*\((Common|Rare|Epic|Legendary|Young|Adult)\)\s*/gi,"").trim();}
 function bdg(r){return '<span class="bdg bdg-'+r+'">'+rarLabel(r)+'</span>';}
 function getIslandMons(key){
@@ -822,7 +826,7 @@ function renderCollection(){
   var sb=document.createElement("div");sb.className="sb";
   ISO.forEach(function(name){
     if(!DB.islands[name]&&!DB.zapping[name])return;
-    var isZapOnly=!!DB.zapping[name]&&!DB.islands[name];
+    var isZapOnly=!!DB.zapping[name]&&(!DB.islands[name]||name==="Celestial Island");
     var mons=isZapOnly?DB.zapping[name]:getIslandMons(name);
     var ownedN=mons.filter(function(m){return isOwned(name,m.n);}).length;
     var totalN=mons.length;
@@ -838,7 +842,7 @@ function renderCollection(){
   document.getElementById("main").appendChild(wrap);
 
   var key=S.colIsland;
-  var isZap=!!DB.zapping[key]&&!DB.islands[key];
+  var isZap=!!DB.zapping[key]&&(!DB.islands[key]||key==="Celestial Island");
   var allMons=isZap?DB.zapping[key]:getIslandMons(key);
   var ownedCount=allMons.filter(function(m){return isOwned(key,m.n);}).length;
   var pct=allMons.length?Math.round(ownedCount/allMons.length*100):0;
@@ -1353,14 +1357,14 @@ function renderWubbox(){
     if(!DB.wubbox[name])return;
     // Count boxed/total for current type to show in sidebar badge
     var wd2=DB.wubbox[name]||{};
-    var bList2=wd2[S.wbType]||[];
+    var bRaw2=wd2[S.wbType]||[];var bList2=Array.isArray(bRaw2)?bRaw2:(bRaw2.list||[]);var bReq2=Array.isArray(bRaw2)?bList2.length:(bRaw2.count||bList2.length);
     var bk2=name+"__"+S.wbType;
     if(!S.wubboxBoxed[bk2])S.wubboxBoxed[bk2]={};
     var bxd2=S.wubboxBoxed[bk2];
     var boxedN2=bList2.filter(function(mn){return bxd2[mn];}).length;
     var d=document.createElement("div");d.className="sbi"+(S.wbIsland===name?" on":"");
     d.innerHTML='<div class="sbi-inner"><span class="sbi-name">'+name+'</span>'+
-      '<span class="sbi-cnt">'+boxedN2+'/'+bList2.length+'</span></div>';
+      '<span class="sbi-cnt">'+boxedN2+'/'+bReq2+'</span></div>';
     d.addEventListener("click",function(){S.wbIsland=name;saveS();renderAll();});
     sb.appendChild(d);
   });
@@ -1376,7 +1380,7 @@ function renderWubbox(){
   var wbRarMap={common:"C",rare:"R",epic:"E"};
   var wbLabels={common:"Common Wubbox",rare:"Rare Wubbox",epic:"Epic Wubbox"};
   ["common","rare","epic"].forEach(function(type){
-    if(!(wd[type]||[]).length)return;
+    var _bArr=Array.isArray(wd[type])?wd[type]:((wd[type]&&wd[type].list)||[]);if(!_bArr.length)return;
     var b=document.createElement("button");
     b.className="rbtn"+(S.wbType===type?" on-"+wbRarMap[type]:"");
     b.style.cssText="display:inline-flex;align-items:center;gap:5px;padding:4px 10px";
@@ -1387,12 +1391,14 @@ function renderWubbox(){
   });
   c.appendChild(tc);
 
-  var bList=wd[S.wbType]||[];
+  var bRaw=wd[S.wbType]||[];
+  var bList=Array.isArray(bRaw)?bRaw:(bRaw.list||[]);
+  var bRequired=Array.isArray(bRaw)?bList.length:(bRaw.count||bList.length);
   var bkey=key+"__"+S.wbType;
   if(!S.wubboxBoxed[bkey])S.wubboxBoxed[bkey]={};
   var boxed=S.wubboxBoxed[bkey];
   var boxedCount=bList.filter(function(mn){return boxed[mn];}).length;
-  var pct=bList.length?Math.round(boxedCount/bList.length*100):0;
+  var pct=bRequired?Math.min(100,Math.round(boxedCount/bRequired*100)):0;
 
   // Wubbox header card — shows selected wubbox image + context
   var wbImgName2=S.wbType==="epic"?"Epic Wubbox":S.wbType==="rare"?"Rare Wubbox":"Wubbox";
@@ -1402,14 +1408,14 @@ function renderWubbox(){
     monImgWithCtx(wbImgName2,S.wbType==="epic"?key:"",56)+
     '<div>'+
       '<div style="font-size:15px;font-weight:700">'+key+'</div>'+
-      '<div style="font-size:12px;color:var(--tx2);margin-top:2px">'+(S.wbType.charAt(0).toUpperCase()+S.wbType.slice(1))+' Wubbox &nbsp;&middot;&nbsp; '+boxedCount+'/'+bList.length+' boxed</div>'+
+      '<div style="font-size:12px;color:var(--tx2);margin-top:2px">'+(S.wbType.charAt(0).toUpperCase()+S.wbType.slice(1))+' Wubbox &nbsp;&middot;&nbsp; '+boxedCount+'/'+bRequired+' boxed</div>'+
     '</div>';
   c.appendChild(wbHdr);
 
   var st=document.createElement("div");st.className="stats";
   st.innerHTML=
-    '<div class="sc sc-owned"><div class="sc-lbl">Boxed</div><div class="sc-val">'+boxedCount+'</div><div class="sc-sub">of '+bList.length+'</div></div>'+
-    '<div class="sc"><div class="sc-lbl">Still Needed</div><div class="sc-val">'+(bList.length-boxedCount)+'</div></div>'+
+    '<div class="sc sc-owned"><div class="sc-lbl">Boxed</div><div class="sc-val">'+boxedCount+'</div><div class="sc-sub">of '+bRequired+'</div></div>'+
+    '<div class="sc"><div class="sc-lbl">Still Needed</div><div class="sc-val">'+Math.max(0,bRequired-boxedCount)+'</div></div>'+
     '<div class="sc"><div class="sc-lbl">Progress</div><div class="sc-val">'+pct+'%</div></div>';
   c.appendChild(st);
 
@@ -1745,7 +1751,7 @@ function renderDatabase(){
 
   var list=DB.monsters.slice();
   if(S.dbSearch){var s2=S.dbSearch.toLowerCase();list=list.filter(function(m){return m.n.toLowerCase().indexOf(s2)>-1;});}
-  if(S.dbRarity)list=list.filter(function(m){return rar(m.n)===S.dbRarity;});
+  if(S.dbRarity)list=list.filter(function(m){return (m.r==="Young"?"Y":rar(m.n))===S.dbRarity;});
   if(S.dbClass)list=list.filter(function(m){return m.c===S.dbClass;});
   if(S.dbElem)list=list.filter(function(m){return m.e.indexOf(S.dbElem)>-1;});
   if(S.dbIsland)list=list.filter(function(m){return m.i.indexOf(S.dbIsland)>-1||(m.c==="Celestial"&&S.dbIsland==="Celestial Island");});
@@ -1879,7 +1885,7 @@ function renderDatabase(){
 
   list.forEach(function(m){
     var legN=m.n+" ("+m.r+")";
-    var r=rar(m.n);
+    var r=(m.r==="Young"?"Y":rar(m.n));
     var firstIsl=(m.i&&m.i[0])||"";
     var elemHtml=m.e.map(function(el){
       return '<span style="display:inline-flex;align-items:center;gap:2px;margin:1px">'+elemImg(el)+'<span style="font-size:11px">'+el+'</span></span>';
@@ -1887,12 +1893,9 @@ function renderDatabase(){
 
     // Use filtered appearances when island filter is active, all otherwise
     var apps=(m.islands||[]).slice();
-    // ── Celestial Island: synthesize from zapTargets (islands[] is empty in data.js) ──
+    // ── Celestial Island: synthesize appearance (islands[] is empty in data.js) ──
     if(m.c==="Celestial"&&!apps.length&&(!S.dbIsland||S.dbIsland==="Celestial Island")){
-      var celZt=(DB.zapTargets||[]).filter(function(t){
-        return t.island==="Celestial Island"&&cleanN(t.n).toLowerCase()===cleanN(m.n).toLowerCase();
-      });
-      if(celZt.length)apps=[{island:"Celestial Island",combo:null,obtain:"Zapping",time:"",_isCelestial:true}];
+      apps=[{island:"Celestial Island",combo:null,obtain:"Zapping",time:"",_isCelestial:true}];
     }
     if(S.dbIsland)apps=apps.filter(function(a){return a.island===S.dbIsland;});
     if(!apps.length)apps=[{island:"",combo:null,obtain:""}]; // placeholder row
@@ -2179,7 +2182,7 @@ function renderIslands(){
   }
   c.appendChild(zone);
 
-  var isZap=!!DB.zapping[key]&&!DB.islands[key];
+  var isZap=!!DB.zapping[key]&&(!DB.islands[key]||key==="Celestial Island");
   var mons=isZap?DB.zapping[key]:getIslandMons(key);
   var cnt=document.createElement("div");cnt.className="cnt";cnt.textContent=mons.length+" monsters on this island";c.appendChild(cnt);
 }

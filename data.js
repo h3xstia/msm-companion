@@ -6246,168 +6246,168 @@ window.DB = {
     "r": "Young",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Furnoss",
     "r": "Young",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Glaishur",
     "r": "Young",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Blasoom",
     "r": "Young",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Syncopite",
     "r": "Young",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Vhamp",
     "r": "Young",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Galvana",
     "r": "Young",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Scaratar",
     "r": "Young",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Loodvigg",
     "r": "Young",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Torrt",
     "r": "Young",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Plixie",
     "r": "Young",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Attmoz",
     "r": "Young",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Adult Hornacle",
     "r": "Adult",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Adult Furnoss",
     "r": "Adult",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Adult Glaishur",
     "r": "Adult",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Adult Blasoom",
     "r": "Adult",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Adult Syncopite",
     "r": "Adult",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Adult Vhamp",
     "r": "Adult",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Adult Galvana",
     "r": "Adult",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Adult Scaratar",
     "r": "Adult",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Adult Loodvigg",
     "r": "Adult",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Adult Torrt",
     "r": "Adult",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Adult Plixie",
     "r": "Adult",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Adult Attmoz",
     "r": "Adult",
     "c": "Celestial",
     "e": ["Celestial"],
-    "islands": []
+    "islands": [{"island": "Celestial Island", "obtain": "Zapping"}]
   },
   {
     "n": "Do",
@@ -8831,6 +8831,10 @@ window.DB = {
     "common": ["Tweedle", "Potbelly", "Noggin", "Mammott", "Dandidoo", "Cybop", "Pango", "Shrubb", "Furcorn", "Drumpler", "Reedling", "Thumpies", "PomPom", "Clamble", "Quarrister"],
     "rare": ["Rare Tweedle", "Rare Potbelly", "Rare Noggin", "Rare Mammott", "Rare Dandidoo", "Rare Cybop", "Rare Pango", "Rare Shrubb", "Rare Furcorn", "Rare Drumpler", "Rare Reedling", "Rare Thumpies", "Rare PomPom", "Rare Clamble", "Rare Quarrister"],
     "epic": ["Epic Tweedle", "Epic Potbelly", "Epic Noggin", "Epic Mammott", "Epic Dandidoo", "Epic Cybop", "Epic Pango", "Epic Shrubb", "Epic Furcorn", "Epic Drumpler", "Epic Reedling", "Epic Thumpies", "Epic PomPom", "Epic Clamble", "Epic Quarrister"]
+  },
+  "Wublin Island": {
+    "common": ["Brump", "Zynth", "Poewk", "Thwok", "Dwumrohl", "Zuuker", "Screemu", "Tympa", "Dermit", "Gheegur", "Whajje", "Creepuscule", "Blipsqueak", "Scargo", "Astropod", "Pixolotl", "Bona-Petite", "Maulch", "Fleechwurm"],
+    "rare": {"list": ["Rare Brump", "Rare Zynth", "Rare Poewk", "Rare Thwok", "Rare Dwumrohl", "Rare Zuuker", "Rare Screemu", "Rare Tympa", "Rare Dermit", "Rare Gheegur", "Rare Whajje", "Rare Creepuscule", "Rare Blipsqueak", "Rare Scargo", "Rare Astropod", "Rare Pixolotl", "Rare Bona-Petite", "Rare Maulch", "Rare Fleechwurm"], "count": 10}
   }
   }
 
