@@ -458,7 +458,7 @@ var S = {
   islandSel:"Plant Island",
   avSearch:"", avRarity:"", avClass:"",
   owned:{}, needed:{}, zapTracked:{}, wubboxBoxed:{}, wubNeeded:{}, zapOrder:{},
-  avail:{}
+  avail:{}, islandSkins:{}
 };
 var _TAB_MIG=[0,0,1,2,3,4,5,6];
 function loadS(){
@@ -669,6 +669,9 @@ function parseEggs(str){
   return r;
 }
 function daysLeft(iso){if(!iso)return null;return Math.max(0,Math.ceil((new Date(iso)-new Date())/86400000));}
+function _parseSecs(str){if(!str)return 0;var s=0;var d=str.match(/(\d+)d/);if(d)s+=parseInt(d[1])*86400;var h=str.match(/(\d+)h/);if(h)s+=parseInt(h[1])*3600;var m=str.match(/(\d+)m(?!s)/);if(m)s+=parseInt(m[1])*60;var sc=str.match(/(\d+)s/);if(sc)s+=parseInt(sc[1]);return s;}
+function _fmtSecs(s){s=Math.round(s);var d=Math.floor(s/86400);s%=86400;var h=Math.floor(s/3600);s%=3600;var m=Math.floor(s/60);s%=60;var p=[];if(d)p.push(d+"d");if(h)p.push(h+"h");if(m)p.push(m+"m");if(s)p.push(s+"s");return p.join(" ")||"0s";}
+function skinTime(str){if(!str)return"";return _fmtSecs(_parseSecs(str)*0.9);}
 // Format a ms-remaining value into "2d 3h left" / "5h left" / "Expired"
 function _fmtMs(ms){
   if(ms<=0)return null;
@@ -861,6 +864,15 @@ function renderCollection(){
   hdr.style.cssText="display:flex;align-items:center;gap:9px;margin-bottom:11px";
   hdr.innerHTML='<span style="font-size:15px;font-weight:700">'+key+'</span><span class="pill">'+(isZap?"Zapping":"Breeding")+'</span>';
   c.appendChild(hdr);
+  if(!isZap){
+    var skinOn=!!(S.islandSkins&&S.islandSkins[key]);
+    var skinBtn=document.createElement("button");
+    skinBtn.className="rbtn"+(skinOn?" on-E":"");
+    skinBtn.style.cssText="margin-left:auto;font-size:11px;padding:3px 10px";
+    skinBtn.textContent="Island Skin";
+    skinBtn.onclick=function(){if(!S.islandSkins)S.islandSkins={};S.islandSkins[key]=!skinOn;saveS();renderAll();};
+    hdr.appendChild(skinBtn);
+  }
 
   var fr=document.createElement("div");fr.className="frow";
   fr.innerHTML=
@@ -898,11 +910,19 @@ function renderCollection(){
     var zapBadges=zn.slice(0,3).map(function(z){
       return '<span class="bdg bdg-zap">Zap: '+z.name+' \xD7'+z.still+'</span>';
     }).join("")+(zn.length>3?'<span class="bdg bdg-zap">+' +(zn.length-3)+' more</span>':"");
+    var _timeDisp="";
+    if(!isZap&&m.t){
+      var _ap=m._appearance,_skinOn=!!(S.islandSkins&&S.islandSkins[key]);
+      if(_skinOn&&_ap&&_ap.time){
+        var _sT=skinTime(_ap.time),_sE=_ap.enhanced?skinTime(_ap.enhanced):"";
+        _timeDisp=_sT+(_sE?' / '+_sE:'');
+      } else { _timeDisp=m.t; }
+    }
     card.innerHTML=
       '<div class="mc-top">'+monImgWithCtx(m.n,key,42)+
         '<div class="mc-info"><div class="mc-name">'+cleanN(m.n)+'</div>'+
         '<div class="mc-elems">'+elems.slice(0,4).map(elemImg).join("")+'</div></div></div>'+
-      '<div class="mc-combo">'+(m.b||(isZap?(m.e||""):""))+'</div>'+
+      '<div class="mc-combo">'+(m.b||(isZap?(m.e||""):""))+(_timeDisp?'<span style="color:var(--tx3)"> \xB7 '+_timeDisp+'</span>':'')+'</div>'+
       '<div class="mc-badges">'+bdg(r)+
         (isAvCard?'<span class="bdg bdg-avail">Available</span>':"")+
         zapBadges+
@@ -1988,7 +2008,12 @@ function renderDatabase(){
       // Breeding/Incubation Time
       var tdTime=document.createElement("td");
       tdTime.style.cssText="font-size:11px;color:var(--tx3);white-space:nowrap";
-      tdTime.textContent=a.time?(a.time+(a.enhanced?" / "+a.enhanced:"")):"—";
+      if(a.time&&S.islandSkins&&S.islandSkins[a.island]){
+        var _dbST=skinTime(a.time),_dbSE=a.enhanced?skinTime(a.enhanced):"";
+        tdTime.textContent=_dbST+(_dbSE?" / "+_dbSE:"");
+      } else {
+        tdTime.textContent=a.time?(a.time+(a.enhanced?" / "+a.enhanced:"")):"—";
+      }
       tr.appendChild(tdTime);
 
       // Owned (per-island)
