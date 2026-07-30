@@ -930,6 +930,7 @@ function daysLeft(iso){if(!iso)return null;return Math.max(0,Math.ceil((new Date
 function _parseSecs(str){if(!str)return 0;var s=0;var d=str.match(/(\d+)d/);if(d)s+=parseInt(d[1])*86400;var h=str.match(/(\d+)h/);if(h)s+=parseInt(h[1])*3600;var m=str.match(/(\d+)m(?!s)/);if(m)s+=parseInt(m[1])*60;var sc=str.match(/(\d+)s/);if(sc)s+=parseInt(sc[1]);return s;}
 function _fmtSecs(s){s=Math.round(s);var d=Math.floor(s/86400);s%=86400;var h=Math.floor(s/3600);s%=3600;var m=Math.floor(s/60);s%=60;var p=[];if(d)p.push(d+"d");if(h)p.push(h+"h");if(m)p.push(m+"m");if(s)p.push(s+"s");return p.join(" ")||"0s";}
 function skinTime(str){if(!str)return"";return _fmtSecs(_parseSecs(str)*0.9);}
+function skinTimeEnh(baseStr,enhStr){if(!enhStr)return"";return _fmtSecs(Math.max(0,_parseSecs(enhStr)-_parseSecs(baseStr)*0.1));}
 // Format a ms-remaining value into "2d 3h left" / "5h left" / "Expired"
 function _fmtMs(ms){
   if(ms<=0)return null;
@@ -1171,7 +1172,7 @@ function renderCollection(){
     if(!isZap&&m.t){
       var _ap=m._appearance,_skinOn=!!(S.islandSkins&&S.islandSkins[key]);
       if(_skinOn&&_ap&&_ap.time){
-        var _sT=skinTime(_ap.time),_sE=_ap.enhanced?skinTime(_ap.enhanced):"";
+        var _sT=skinTime(_ap.time),_sE=_ap.enhanced?skinTimeEnh(_ap.time,_ap.enhanced):"";
         _timeDisp=_sT+(_sE?' / '+_sE:'');
       } else { _timeDisp=m.t; }
     }
@@ -2274,7 +2275,7 @@ function renderDatabase(){
       var tdTime=document.createElement("td");
       tdTime.style.cssText="font-size:11px;color:var(--tx3);white-space:nowrap";
       if(a.time&&S.islandSkins&&S.islandSkins[a.island]){
-        var _dbST=skinTime(a.time),_dbSE=a.enhanced?skinTime(a.enhanced):"";
+        var _dbST=skinTime(a.time),_dbSE=a.enhanced?skinTimeEnh(a.time,a.enhanced):"";
         tdTime.textContent=_dbST+(_dbSE?" / "+_dbSE:"");
       } else {
         tdTime.textContent=a.time?(a.time+(a.enhanced?" / "+a.enhanced:"")):"—";
@@ -2772,7 +2773,7 @@ function renderBreedSim(){
               var tSpan=document.createElement("span");
               tSpan.style.cssText="font-size:11px;color:var(--tx3);white-space:nowrap;flex-shrink:0";
               var skinOn=!!(S.islandSkins&&S.islandSkins[isl]);
-              if(skinOn){var st=skinTime(entry.time),se=entry.enhanced?skinTime(entry.enhanced):"";tSpan.textContent=st+(se?" / "+se:"");}
+              if(skinOn){var st=skinTime(entry.time),se=entry.enhanced?skinTimeEnh(entry.time,entry.enhanced):"";tSpan.textContent=st+(se?" / "+se:"");}
               else{tSpan.textContent=entry.time+(entry.enhanced?" / "+entry.enhanced:"");}
               row.appendChild(tSpan);
             }
