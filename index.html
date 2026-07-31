@@ -2536,7 +2536,7 @@ function _simTok(tok,par){
   if(par.n===tok)return true;
   if(tok==="Any Triple"){var el=(par.e||[]).length;return el===3&&(par.c==="Natural"||par.c==="Fire"||par.c==="Magical"||par.c==="Paironormal");}
   var mm=tok.match(/^Any\s+(.+?)\s+Triple$/i);
-  if(mm){var kw=mm[1];if(kw.toLowerCase()==="fire")return(par.e||[]).length===3&&par.c==="Fire";var el=(par.e||[]).length;if(par.c==="Magical")return(el===2||el===3)&&(par.e||[]).indexOf(kw)>-1;return el===3&&(par.e||[]).indexOf(kw)>-1;}
+  if(mm){var kw=mm[1];if(kw.toLowerCase()==="fire")return(par.e||[]).length===3&&par.c==="Fire";return(par.e||[]).length===3&&(par.e||[]).indexOf(kw)>-1;}
   if(/single\s+ethereal/i.test(tok))return par.c==="Ethereal"&&(par.e||[]).length===1;
   if(/any\s+single\s+mythical/i.test(tok))return par.c==="Mythical"&&(par.e||[]).length===1;
   if(/any\s+monster/i.test(tok))return true;
@@ -2575,7 +2575,12 @@ function computeOffspring(p1n,p2n){
       // Both parents must be on this island
       if(!_hasIsland(p1,a.island)||!_hasIsland(p2,a.island))return;
       // Explicit combo takes priority (covers special combos, re-breeds, etc.)
-      if(_simCombo(a.combo,p1,p2,a.island)){found[a.island]=a;return;}
+      if(_simCombo(a.combo,p1,p2,a.island)){
+        // Rare Singles require two DIFFERENT species (wiki: "two different Triple-Element Monsters")
+        if(m.r==="Rare"&&(m.e||[]).length===1&&p1.n===p2.n
+          &&Array.isArray(a.combo)&&/^Any\s+\S+\s+Triple$/i.test(a.combo[0]))return;
+        found[a.island]=a;return;
+      }
       // Element addition: island-constrained
       if(!_isElemResult(m,a.island))return;
       if(!_canParent(p1,a.island)||!_canParent(p2,a.island))return;
