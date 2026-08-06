@@ -31,7 +31,7 @@
 // Add an entry to zapTargets with: n, island, limit, requirements[].
 // Each requirement: { monster: "Name", eggs: N }
 //
-// RARITIES:  "Common" | "Rare" | "Epic" | "Legendary" | "Young" | "Adult"
+// RARITIES:  "Common" | "Rare" | "Epic" | "Legendary" | "Young" | "Adult" | "Tonal" | "Elemental" | "Royal" | "Astral"
 // CLASSES:   "Natural" | "Fire" | "Magical" | "Ethereal" | "Paironormal"
 //            "Primordial" | "Supernatural" | "Legendary" | "Seasonal"
 //            "Mythical" | "Celestial" | "Dipster" | "Titansoul"
@@ -2688,6 +2688,18 @@ window.DB = {
     ]
   },
   {
+    "n": "Epic Theremind",
+    "r": "Epic",
+    "c": "Magical",
+    "e": ["Psychic"],
+    "islands": [
+      { "island": "Psychic Island", "combo": ["Gloptic", "Yuggler"], "time": "1d 12m", "enhanced": "18h 9m" },
+      { "island": "Magical Sanctum", "combo": ["Enchantling", "Déjà-Jin"], "time": "1d 12m", "enhanced": "18h 9m" },
+      { "island": "Magical Nexus", "combo": null, "obtain": "Teleport" },
+      { "island": "Mirror Psychic Island", "combo": ["Gloptic", "Yuggler"], "time": "1d 12m", "enhanced": "18h 9m" }
+    ]
+  },
+  {
     "n": "Epic Clackula",
     "r": "Epic",
     "c": "Magical",
@@ -4179,7 +4191,8 @@ window.DB = {
     "e": ["Shadow", "Crystal", "Poison"],
     "islands": [
       { "island": "Ethereal Workshop", "combo": ["Shadow Meeb", "Crystal Meeb", "Poison Meeb"], "obtain": "Synthesis", "time": "1d 6h", "enhanced": "10h" },
-      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" }
+      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 6h" }
     ]
   },
   {
@@ -4283,6 +4296,17 @@ window.DB = {
       { "island": "Ethereal Workshop", "combo": ["Tuned Up Shadow (Rare)", "Tuned Up Mech (Rare)", "Tuned Up Poison (Rare)"], "obtain": "Synthesis" },
       { "island": "Mech Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" },
       { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" }
+    ]
+  },
+  {
+    "n": "Rare X'rt",
+    "r": "Rare",
+    "c": "Ethereal",
+    "e": ["Shadow", "Crystal", "Poison"],
+    "islands": [
+      { "island": "Ethereal Workshop", "combo": ["Tuned Up Shadow (Rare)", "Tuned Up Crystal (Rare)", "Tuned Up Poison (Rare)"], "obtain": "Synthesis" },
+      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" },
+      { "island": "Crystal Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 11h" }
     ]
   },
   {
@@ -5124,6 +5148,15 @@ window.DB = {
     ]
   },
   {
+    "n": "Epic Astropod",
+    "r": "Epic",
+    "c": "Supernatural",
+    "e": ["Electricity"],
+    "islands": [
+      { "island": "Wublin Island", "combo": null, "obtain": "Zapping" }
+    ]
+  },
+  {
     "n": "Epic Bona-Petite",
     "r": "Epic",
     "c": "Supernatural",
@@ -5285,6 +5318,16 @@ window.DB = {
     "islands": [
       { "island": "Cold Island", "combo": ["Thumpies", "Congle"], "time": "1d 11h", "enhanced": "1d 2h 15m" },
       { "island": "Mirror Cold Island", "combo": ["Thumpies", "Congle"], "time": "1d 11h", "enhanced": "1d 2h 15m" }
+    ]
+  },
+  {
+    "n": "Alcordion",
+    "r": "Common",
+    "c": "Legendary",
+    "e": ["Legendary"],
+    "islands": [
+      { "island": "Air Island", "combo": ["Scups", "PomPom"], "time": "2d 2h", "enhanced": "1d 13h 30m" },
+      { "island": "Mirror Air Island", "combo": ["Scups", "PomPom"], "time": "2d 2h", "enhanced": "1d 13h 30m" }
     ]
   },
   {
@@ -6411,7 +6454,7 @@ window.DB = {
   },
   {
     "n": "Do",
-    "r": "Common",
+    "r": "Tonal",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6441,7 +6484,7 @@ window.DB = {
   },
   {
     "n": "Re",
-    "r": "Common",
+    "r": "Tonal",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6471,7 +6514,7 @@ window.DB = {
   },
   {
     "n": "Mi",
-    "r": "Common",
+    "r": "Tonal",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6501,7 +6544,7 @@ window.DB = {
   },
   {
     "n": "Fa",
-    "r": "Common",
+    "r": "Tonal",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6531,7 +6574,7 @@ window.DB = {
   },
   {
     "n": "Sol",
-    "r": "Common",
+    "r": "Tonal",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6561,7 +6604,7 @@ window.DB = {
   },
   {
     "n": "La",
-    "r": "Common",
+    "r": "Tonal",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6591,7 +6634,7 @@ window.DB = {
   },
   {
     "n": "Ti",
-    "r": "Common",
+    "r": "Tonal",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6617,6 +6660,75 @@ window.DB = {
       { "island": "Mirror Psychic Island", "combo": null, "obtain": "Purchase (Keys)", "req": "Purchase for 6 Keys" },
       { "island": "Mirror Faerie Island", "combo": null, "obtain": "Purchase (Keys)", "req": "Purchase for 6 Keys" },
       { "island": "Mirror Bone Island", "combo": null, "obtain": "Purchase (Keys)", "req": "Purchase for 6 Keys" }
+    ]
+  },
+  {
+    "n": "Vitreous Ti",
+    "r": "Elemental",
+    "c": "Dipster",
+    "e": ["Dipster"],
+    "islands": [
+      { "island": "Plant Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Cold Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Air Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Water Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Earth Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Fire Haven", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Fire Oasis", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Light Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Psychic Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Faerie Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Bone Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Ethereal Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Magical Sanctum", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Plant Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Cold Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Air Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Water Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Earth Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Light Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Psychic Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Faerie Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Bone Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" }
+    ]
+  },
+  {
+    "n": "King Do",
+    "r": "Royal",
+    "c": "Dipster",
+    "e": ["Dipster"],
+    "islands": [
+      { "island": "Plant Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Cold Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Air Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Water Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Earth Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Fire Haven", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Fire Oasis", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Light Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Psychic Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Faerie Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Bone Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Ethereal Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Magical Sanctum", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Plant Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Cold Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Air Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Water Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Earth Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Light Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Psychic Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Faerie Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
+      { "island": "Mirror Bone Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" }
+    ]
+  },
+  {
+    "n": "Superno-Fa",
+    "r": "Tonal",
+    "c": "Dipster",
+    "e": ["Astral"],
+    "islands": [
+      { "island": "Celestial Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
     ]
   },
   {
@@ -8107,6 +8219,21 @@ window.DB = {
       { "monster": "Epic Deedge", "eggs": 1 },
       { "monster": "Epic Glowl", "eggs": 1 },
       { "monster": "Epic Wynq", "eggs": 1 }
+    ]
+  },
+  {
+    "n": "Epic Astropod",
+    "island": "Wublin Island",
+    "limit": "No Time Limit",
+    "requirements": [
+      { "monster": "Epic Toe Jammer", "eggs": 1 },
+      { "monster": "Epic Reedling", "eggs": 1 },
+      { "monster": "Epic Spunge", "eggs": 1 },
+      { "monster": "Epic Scups", "eggs": 1 },
+      { "monster": "Epic Shellbeat", "eggs": 1 },
+      { "monster": "Epic Whaddle", "eggs": 1 },
+      { "monster": "Epic Rootitoot", "eggs": 1 },
+      { "monster": "Epic Flum Ox", "eggs": 1 }
     ]
   },
    {

@@ -2581,11 +2581,15 @@ function computeOffspring(p1n,p2n){
           &&Array.isArray(a.combo)&&/^Any\s+\S+\s+Triple$/i.test(a.combo[0]))return;
         found[a.island]=a;return;
       }
-      // Element addition: island-constrained
+      // Parents + their Rare variants always appear regardless of special class
+      var mk=_simSetKey(m.e);
+      var pn1=p1.n,pn2=p2.n;
+      var isParentVariant=(m.n===pn1||m.n===pn2||m.n==="Rare "+pn1||m.n==="Rare "+pn2||"Rare "+m.n===pn1||"Rare "+m.n===pn2);
+      if(!natSingle&&isParentVariant&&(mk===p1key||mk===p2key)&&(m.r==="Common"||m.r==="Rare")){found[a.island]=a;return;}
+      // Element addition: island-constrained (new offspring, not parent copies)
       if(!_isElemResult(m,a.island))return;
       if(!_canParent(p1,a.island)||!_canParent(p2,a.island))return;
-      var mk=_simSetKey(m.e);
-      if((disjoint&&mk===unionKey)||(!natSingle&&(mk===p1key||mk===p2key)))found[a.island]=a;
+      if(disjoint&&mk===unionKey)found[a.island]=a;
     });
     var keys=Object.keys(found);
     if(keys.length)out.push({m:m,islands:keys,entries:found});
