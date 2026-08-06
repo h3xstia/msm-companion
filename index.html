@@ -244,6 +244,10 @@ select:focus,input:focus{
 .rbtn.on-C{background:rgba(74,222,128,.13);border-color:rgba(74,222,128,.45);color:var(--com)}
 .rbtn.on-R{background:rgba(96,165,250,.13);border-color:rgba(96,165,250,.45);color:var(--rar)}
 .rbtn.on-E{background:rgba(245,158,11,.13);border-color:rgba(245,158,11,.45);color:var(--epi)}
+.rbtn.on-T{background:rgba(139,154,176,.13);border-color:rgba(139,154,176,.45);color:#8b9ab0}
+.rbtn.on-El{background:rgba(193,122,82,.13);border-color:rgba(193,122,82,.45);color:#c17a52}
+.rbtn.on-Ro{background:rgba(196,30,58,.13);border-color:rgba(196,30,58,.45);color:#c41e3a}
+.rbtn.on-As{background:rgba(84,116,180,.13);border-color:rgba(84,116,180,.45);color:#5474b4}
 .rbtn.on{background:rgba(160,110,248,.13);border-color:rgba(160,110,248,.45);color:var(--acc2)}
 
 /* ── BADGES ── */
@@ -254,6 +258,10 @@ select:focus,input:focus{
 .bdg-L{background:rgba(251,113,133,.13);color:var(--leg);border:1px solid rgba(251,113,133,.2)}
 .bdg-Y{background:rgba(255,198,0,.13);color:#ffc600;border:1px solid rgba(255,198,0,.2)}
 .bdg-A{background:rgba(255,138,0,.13);color:#ff8a00;border:1px solid rgba(255,138,0,.2)}
+.bdg-T{background:rgba(139,154,176,.13);color:#8b9ab0;border:1px solid rgba(139,154,176,.2)}
+.bdg-El{background:rgba(193,122,82,.13);color:#c17a52;border:1px solid rgba(193,122,82,.2)}
+.bdg-Ro{background:rgba(196,30,58,.13);color:#c41e3a;border:1px solid rgba(196,30,58,.2)}
+.bdg-As{background:rgba(84,116,180,.13);color:#5474b4;border:1px solid rgba(84,116,180,.2)}
 .bdg-need{background:rgba(245,158,11,.16);color:var(--epi)}
 .bdg-zap{background:rgba(188,140,255,.16);color:#bc8cff;border:1px solid rgba(188,140,255,.22)}
 .bdg-wub{background:rgba(86,180,233,.16);color:#56b4e9;border:1px solid rgba(86,180,233,.22)}
@@ -897,10 +905,14 @@ function rar(name){
   if(n.startsWith("rare ")||n.indexOf("(rare)")>-1)return"R";
   if(n.indexOf("(young)")>-1)return"Y";
   if(n.startsWith("adult ")||n.indexOf("(adult)")>-1)return"A";
+  if(n.indexOf("(tonal)")>-1)return"T";
+  if(n.indexOf("(elemental)")>-1)return"El";
+  if(n.indexOf("(royal)")>-1)return"Ro";
+  if(n.indexOf("(astral)")>-1)return"As";
   return"C";
 }
-function rarLabel(r){return r==="E"?"Epic":r==="R"?"Rare":r==="Y"?"Young":r==="A"?"Adult":"Common";}
-function cleanN(name){return name.replace(/\s*\((Common|Rare|Epic|Legendary|Young|Adult)\)\s*/gi,"").trim();}
+function rarLabel(r){return r==="E"?"Epic":r==="R"?"Rare":r==="Y"?"Young":r==="A"?"Adult":r==="T"?"Tonal":r==="El"?"Elemental":r==="Ro"?"Royal":r==="As"?"Astral":"Common";}
+function cleanN(name){return name.replace(/\s*\((Common|Rare|Epic|Legendary|Young|Adult|Tonal|Elemental|Royal|Astral)\)\s*/gi,"").trim();}
 function bdg(r){return '<span class="bdg bdg-'+r+'">'+rarLabel(r)+'</span>';}
 function getIslandMons(key){
   return (DB.islands[key]||[]).filter(function(m){return m.n.indexOf("Box Requirements")===-1;});
@@ -1090,6 +1102,7 @@ function renderCollection(){
     if(!DB.islands[name]&&!DB.zapping[name])return;
     var isZapOnly=!!DB.zapping[name]&&(!DB.islands[name]||name==="Celestial Island");
     var mons=isZapOnly?DB.zapping[name]:getIslandMons(name);
+    if(isZapOnly&&DB.islands[name]){var _zn={};mons.forEach(function(m){_zn[m.n]=true;});getIslandMons(name).forEach(function(m){if(!_zn[m.n])mons=mons.concat([m]);});}
     var ownedN=mons.filter(function(m){return isOwned(name,m.n);}).length;
     var totalN=mons.length;
     var d=document.createElement("div");d.className="sbi"+(S.colIsland===name?" on":"");
@@ -1106,6 +1119,7 @@ function renderCollection(){
   var key=S.colIsland;
   var isZap=!!DB.zapping[key]&&(!DB.islands[key]||key==="Celestial Island");
   var allMons=isZap?DB.zapping[key]:getIslandMons(key);
+  if(isZap&&DB.islands[key]){var _zn={};allMons.forEach(function(m){_zn[m.n]=true;});getIslandMons(key).forEach(function(m){if(!_zn[m.n])allMons=allMons.concat([m]);});}
   var ownedCount=allMons.filter(function(m){return isOwned(key,m.n);}).length;
   var pct=allMons.length?Math.round(ownedCount/allMons.length*100):0;
 
@@ -1133,16 +1147,21 @@ function renderCollection(){
     hdr.appendChild(skinBtn);
   }
 
+  // Build filter buttons dynamically from rarities present on this island
+  var rarOrder=["C","R","E","L","T","El","Ro","As","Y","A"];
+  var presentRars={};allMons.forEach(function(m){presentRars[rar(m.n)]=true;});
   var fr=document.createElement("div");fr.className="frow";
-  fr.innerHTML=
-    '<button class="rbtn'+(S.colRarity==="C"?" on-C":"")+'" id="rc_C">Common</button>'+
-    '<button class="rbtn'+(S.colRarity==="R"?" on-R":"")+'" id="rc_R">Rare</button>'+
-    '<button class="rbtn'+(S.colRarity==="E"?" on-E":"")+'" id="rc_E">Epic</button>'+
-    '<label><input type="checkbox" id="rc_HO"'+(S.colHideOwned?" checked":"")+'>  Hide owned</label>';
+  rarOrder.filter(function(rc){return presentRars[rc];}).forEach(function(rc){
+    var btn=document.createElement("button");
+    btn.className="rbtn"+(S.colRarity===rc?" on-"+rc:"");
+    btn.textContent=rarLabel(rc);
+    btn.onclick=function(){S.colRarity=S.colRarity===rc?"":rc;saveS();renderAll();};
+    fr.appendChild(btn);
+  });
+  var hoLabel=document.createElement("label");
+  hoLabel.innerHTML='<input type="checkbox" id="rc_HO"'+(S.colHideOwned?" checked":"")+'>  Hide owned';
+  fr.appendChild(hoLabel);
   c.appendChild(fr);
-  document.getElementById("rc_C").onclick=function(){S.colRarity=S.colRarity==="C"?"":"C";saveS();renderAll();};
-  document.getElementById("rc_R").onclick=function(){S.colRarity=S.colRarity==="R"?"":"R";saveS();renderAll();};
-  document.getElementById("rc_E").onclick=function(){S.colRarity=S.colRarity==="E"?"":"E";saveS();renderAll();};
   document.getElementById("rc_HO").onchange=function(){S.colHideOwned=this.checked;saveS();renderAll();};
 
   var list=allMons.slice();
@@ -1188,7 +1207,7 @@ function renderCollection(){
         '<div class="mc-elems">'+elems.slice(0,4).map(elemImg).join("")+'</div></div>'+
         chipsHtml+
       '</div>'+
-      '<div class="mc-combo">'+(m.b||(isZap?(m.e||""):""))+(_timeDisp?'<span style="color:var(--tx3)"> \xB7 '+_timeDisp+'</span>':'')+'</div>'+
+      '<div class="mc-combo">'+(m.b||(isZap?"Zapping":""))+(_timeDisp?'<span style="color:var(--tx3)"> \xB7 '+_timeDisp+'</span>':'')+'</div>'+
       '<div class="mc-badges">'+bdg(r)+
         (isAvCard?'<span class="bdg bdg-avail">Available</span>':"")+
         zapBadges+
@@ -2594,7 +2613,7 @@ function computeOffspring(p1n,p2n){
     var keys=Object.keys(found);
     if(keys.length)out.push({m:m,islands:keys,entries:found});
   });
-  var rOrd={Common:0,Rare:1,Epic:2,Legendary:3,Young:4,Adult:4};
+  var rOrd={Common:0,Rare:1,Epic:2,Legendary:3,Young:4,Adult:4,Tonal:5,Elemental:6,Royal:7,Astral:8};
   out.sort(function(a,b){var ra=rOrd[a.m.r]!==undefined?rOrd[a.m.r]:5;var rb=rOrd[b.m.r]!==undefined?rOrd[b.m.r]:5;return ra!==rb?ra-rb:(a.m.n<b.m.n?-1:1);});
   return out;
 }
@@ -2608,7 +2627,7 @@ function _sharesIsland(m1,m2){
   return false;
 }
 // BREED SIM TAB
-var _SIM_RARITY_CLR={Common:"#22c55e",Rare:"#60a5fa",Epic:"#c084fc",Legendary:"#fbbf24",Young:"#fb923c",Adult:"#fb923c"};
+var _SIM_RARITY_CLR={Common:"#22c55e",Rare:"#60a5fa",Epic:"#c084fc",Legendary:"#fbbf24",Young:"#fb923c",Adult:"#fb923c",Tonal:"#8b9ab0",Elemental:"#c17a52",Royal:"#c41e3a",Astral:"#5474b4"};
 function renderBreedSim(){
   var wrap=makeSplit();
   var c=makePanel();

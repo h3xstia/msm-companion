@@ -6724,9 +6724,9 @@ window.DB = {
   },
   {
     "n": "Superno-Fa",
-    "r": "Tonal",
+    "r": "Astral",
     "c": "Dipster",
-    "e": ["Astral"],
+    "e": ["Dipster"],
     "islands": [
       { "island": "Celestial Island", "combo": null, "obtain": "Dipster Digs", "req": "Win from Dipster Digs" },
     ]
