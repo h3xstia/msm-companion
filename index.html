@@ -1941,51 +1941,126 @@ function removeAvail(key){delete S.avail[key];saveS();renderAll();}
 function syncAvailFromWiki(silent){
   var btn=silent?null:document.getElementById("avWikiSync");
   if(btn){btn.disabled=true;btn.textContent="Syncing…";}
-  var xhr=new XMLHttpRequest();
-  xhr.open("GET","https://mysingingmonsters.fandom.com/api.php?action=parse&page=Breeding_Availability&format=json&origin=*&prop=text&section=1");
-  xhr.timeout=12000;
-  xhr.onload=function(){
-    try{
-      var data=JSON.parse(xhr.responseText);
-      var html=data.parse&&data.parse.text&&data.parse.text["*"];
-      if(!html)throw new Error("Empty response from wiki");
-      // Strip StarShop header row and the portrait row immediately after it
-      var rows=html.split("<tr");
-      var skipNext=false;
-      html=rows.filter(function(row){
-        if(skipNext){skipNext=false;return false;}
-        if(row.indexOf("StarShop")!==-1){skipNext=true;return false;}
-        return true;
-      }).join("<tr");
-      // Extract portrait names: alt="Rare Shellbeat Portrait" → "Rare Shellbeat"
-      var names=[],m,re=/alt="([^"]+) Portrait"/g;
-      while((m=re.exec(html))!==null)names.push(m[1]);
-      // Clear previously wiki-synced entries, keep manual ones
-      if(!S.avail)S.avail={};
-      Object.keys(S.avail).forEach(function(k){if(S.avail[k]&&S.avail[k].wiki)delete S.avail[k];});
-      // Match each name to DB.monsters
-      var matched=0,skipped=[];
-      names.forEach(function(name){
-        var mon=DB.monsters.find(function(x){return x.n===name;});
-        if(!mon){var nl=name.toLowerCase();mon=DB.monsters.find(function(x){return x.n.toLowerCase()===nl;});}
-        if(mon){S.avail[mon.n+" ("+mon.r+")"]=({until:null,wiki:true});matched++;}
-        else skipped.push(name);
-      });
-      S.wikiSyncTime=Date.now();
-      S.wikiSyncCount=matched;
-      S.wikiUnknown=skipped.length?skipped:null;
-      saveS();renderAll();
-      if(skipped.length)console.log("[Wiki Sync] Unrecognised (add to data.js):",skipped);
-    }catch(e){
-      if(!silent){if(btn){btn.disabled=false;btn.textContent="↻ Sync from Wiki";}alert("Wiki sync failed: "+e.message);}
-      else console.warn("[Wiki Sync] Failed:",e.message);
+  function fail(msg){
+    if(!silent){if(btn){btn.disabled=false;btn.textContent="↻ Sync from Wiki";}alert("Wiki sync failed: "+msg);}
+    else console.warn("[Wiki Sync] Failed:",msg);
+  }
+  function parsePage(html){
+    var tmp=document.createElement("div");
+    tmp.innerHTML=html;
+    var redirLink=tmp.querySelector(".redirectMsg a");
+    if(redirLink)return{redirect:redirLink.getAttribute("title")||""};
+    var container=tmp.querySelector(".mw-parser-output")||tmp;
+    var cats=[],curCat=null,inTarget=false;
+    var el=container.firstElementChild;
+    while(el){
+      var headEl=(/^H[234]$/.test(el.tagName))?el
+        :(el.classList&&el.classList.contains("mw-heading")?el.querySelector("h2,h3,h4"):null);
+      if(headEl){
+        var lvl=headEl.tagName,txt=headEl.textContent.toLowerCase();
+        if(lvl==="H2"){
+          if(inTarget&&cats.length)break;
+          inTarget=txt.indexOf("current")>-1&&txt.indexOf("sale")>-1;
+        }
+      } else if(inTarget){
+        // The {{AvailableMonsters}} template renders a table where:
+        //   <tr><th>  [icon img] Category Name  </th></tr>  → category header
+        //   <tr><td>  [portrait imgs / vessel links]  </td></tr>  → monsters
+        var rows=el.querySelectorAll("tr");
+        for(var ri=0;ri<rows.length;ri++){
+          var row=rows[ri];
+          var th=row.querySelector("th");
+          if(th){
+            // Extract category name: remove all image alt texts from textContent
+            var cn=th.textContent||"";
+            var thImgs=th.querySelectorAll("img");
+            for(var ti=0;ti<thImgs.length;ti++){
+              cn=cn.replace(thImgs[ti].getAttribute("alt")||"","");
+            }
+            cn=cn.trim();
+            if(cn){curCat={name:cn,portraits:[]};cats.push(curCat);}
+          } else {
+            // Content row — collect portrait images
+            var rowImgs=row.querySelectorAll('img[alt$=" Portrait"]');
+            for(var ii=0;ii<rowImgs.length;ii++){
+              var alt=rowImgs[ii].getAttribute("alt")||"";
+              var pn=alt.slice(0,alt.length-" Portrait".length).trim();
+              if(!pn)continue;
+              if(!curCat){curCat={name:"Available Now",portraits:[]};cats.push(curCat);}
+              if(curCat.portraits.indexOf(pn)===-1)curCat.portraits.push(pn);
+            }
+            // Collect Vessel links: "Flowah (Vessel)" → "Flowah"
+            var vsuf=" (Vessel)";
+            var links=row.querySelectorAll("a");
+            for(var li=0;li<links.length;li++){
+              var lt=(links[li].textContent||"").trim();
+              if(lt.slice(-vsuf.length)===vsuf){
+                var mn=lt.slice(0,-vsuf.length).trim();
+                if(mn){
+                  if(!curCat){curCat={name:"Vessels",portraits:[]};cats.push(curCat);}
+                  if(curCat.portraits.indexOf(mn)===-1)curCat.portraits.push(mn);
+                }
+              }
+            }
+          }
+        }
+        // Fallback: portrait images not inside a table (template renders differently)
+        if(!rows.length){
+          var imgs2=el.querySelectorAll('img[alt$=" Portrait"]');
+          for(var i2=0;i2<imgs2.length;i2++){
+            var alt2=imgs2[i2].getAttribute("alt")||"";
+            var pn2=alt2.slice(0,alt2.length-" Portrait".length).trim();
+            if(!pn2)continue;
+            if(!curCat){curCat={name:"Available Now",portraits:[]};cats.push(curCat);}
+            if(curCat.portraits.indexOf(pn2)===-1)curCat.portraits.push(pn2);
+          }
+        }
+      }
+      el=el.nextElementSibling;
     }
-  };
-  xhr.onerror=xhr.ontimeout=function(){
-    if(!silent){if(btn){btn.disabled=false;btn.textContent="↻ Sync from Wiki";}alert("Wiki sync failed: network error or timeout");}
-    else console.warn("[Wiki Sync] Network error or timeout");
-  };
-  xhr.send();
+    // Drop empty categories (e.g. "There are no Rare Monsters currently available")
+    cats=cats.filter(function(c){return c.portraits.length>0;});
+    return{cats:cats};
+  }
+  function fetchPage(pageName,depth){
+    if(depth>3){fail("Too many redirects");return;}
+    var xhr=new XMLHttpRequest();
+    xhr.open("GET","https://mysingingmonsters.fandom.com/api.php?action=parse&format=json&origin=*&prop=text&redirects=1&disablelimitreport=1&disableeditsection=1&page="+encodeURIComponent(pageName)+"&_t="+Date.now());
+    xhr.timeout=20000;
+    xhr.onload=function(){
+      try{
+        var d=JSON.parse(xhr.responseText);
+        if(d.error)throw new Error(d.error.info||"Wiki API error");
+        var html=(d.parse&&d.parse.text&&d.parse.text["*"])||"";
+        if(!html)throw new Error("Empty response from wiki");
+        var result=parsePage(html);
+        if(result.redirect){fetchPage(result.redirect,depth+1);return;}
+        var cats=result.cats||[];
+        var total=cats.reduce(function(s,c){return s+c.portraits.length;},0);
+        if(!total)throw new Error("Wiki page loaded but no currently available monsters found — the template may render client-side only");
+        if(!S.avail)S.avail={};
+        Object.keys(S.avail).forEach(function(k){if(S.avail[k]&&S.avail[k].wiki)delete S.avail[k];});
+        var matched=0,skipped=[];
+        cats.forEach(function(cat){
+          cat.portraits.forEach(function(name){
+            var mon=DB.monsters.find(function(x){return x.n===name;});
+            if(!mon){var nl=name.toLowerCase();mon=DB.monsters.find(function(x){return x.n.toLowerCase()===nl;});}
+            if(mon){S.avail[mon.n+" ("+mon.r+")"]=({until:null,wiki:true,category:cat.name});matched++;}
+            else skipped.push(name);
+          });
+        });
+        S.wikiCategories=cats.map(function(c){return c.name;});
+        S.wikiSyncTime=Date.now();
+        S.wikiSyncCount=matched;
+        S.wikiUnknown=skipped.length?skipped:null;
+        saveS();renderAll();
+        if(skipped.length)console.log("[Wiki Sync] Unrecognised:",skipped);
+      }catch(e){fail(e.message);}
+    };
+    xhr.onerror=xhr.ontimeout=function(){fail("Network error or timeout");};
+    xhr.send();
+  }
+  fetchPage("Availability",0);
 }
 // Auto-purge expired entries
 function purgeExpiredAvail(){
@@ -2320,25 +2395,15 @@ function renderDatabase(){
 function renderAvailable(){
   if(!S.avail)S.avail={};
   purgeExpiredAvail();
-  // Auto-refresh from wiki if >30 min since last sync (silent, async)
   var WIKI_TTL=30*60*1000;
   if(!S.wikiSyncTime||Date.now()-S.wikiSyncTime>WIKI_TTL)syncAvailFromWiki(true);
 
   var c=makePanel();
   var wrap=document.createElement("div");wrap.className="tab on";wrap.appendChild(c);
-  document.getElementById("main").appendChild(wrap);  // append to DOM first so getElementById works
+  document.getElementById("main").appendChild(wrap);
 
-  // Sort available keys: soonest-expiring first, then indefinite, then by name
   var availKeys=Object.keys(S.avail).filter(function(k){return S.avail[k];});
-  availKeys.sort(function(a,b){
-    var ua=S.avail[a]&&S.avail[a].until;var ub=S.avail[b]&&S.avail[b].until;
-    if(ua&&ub)return ua-ub;
-    if(ua&&!ub)return -1;
-    if(!ua&&ub)return 1;
-    return a.localeCompare(b);
-  });
 
-  // Header
   var hdr=document.createElement("div");
   hdr.style.cssText="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px";
   hdr.innerHTML=
@@ -2347,10 +2412,9 @@ function renderAvailable(){
       '<p style="font-size:12px;color:var(--tx3);margin-top:3px">Track which monsters are currently obtainable — seasonal, event, or returning.</p>'+
     '</div>'+
     '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+
-      '<a href="https://mysingingmonsters.fandom.com/wiki/Breeding_Availability#Currently_Available_Monsters" target="_blank" style="font-size:12px;color:var(--rar);text-decoration:none" title="MSM Wiki — currently available monsters">MSM Wiki &#8599;</a>'+
+      '<a href="https://mysingingmonsters.fandom.com/wiki/Availability" target="_blank" style="font-size:12px;color:var(--rar);text-decoration:none" title="MSM Wiki — currently available monsters">MSM Wiki &#8599;</a>'+
     '</div>';
   c.appendChild(hdr);
-  // Warning banner for unrecognised wiki monsters (new monsters not yet in data.js)
   if(S.wikiUnknown&&S.wikiUnknown.length){
     var warn=document.createElement("div");
     warn.style.cssText="background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.35);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:#f85149";
@@ -2366,20 +2430,16 @@ function renderAvailable(){
     '<button class="btn-pri" id="avAddBtn">＋ Add Monster</button>'+
     '<button class="btn" id="avWikiSync" style="font-size:12px">↻ Sync from Wiki</button>';
   c.appendChild(actRow);
-  // Last-synced status line
+  var stDiv=document.createElement("div");
+  stDiv.style.cssText="font-size:11px;color:var(--tx3);margin-bottom:12px";
   if(S.wikiSyncTime){
     var ago=Math.round((Date.now()-S.wikiSyncTime)/60000);
     var agoTxt=ago<1?"just now":ago<60?ago+"m ago":Math.round(ago/60)+"h ago";
-    var st=document.createElement("div");
-    st.style.cssText="font-size:11px;color:var(--tx3);margin-bottom:12px";
-    st.textContent="Last wiki sync: "+agoTxt+" · "+(S.wikiSyncCount||0)+" monsters";
-    c.appendChild(st);
+    stDiv.textContent="Last wiki sync: "+agoTxt+" · "+(S.wikiSyncCount||0)+" monsters";
   } else {
-    var st=document.createElement("div");
-    st.style.cssText="font-size:11px;color:var(--tx3);margin-bottom:12px";
-    st.textContent="Click ↻ Sync from Wiki to auto-import currently available monsters.";
-    c.appendChild(st);
+    stDiv.textContent="Click ↻ Sync from Wiki to auto-import currently available monsters.";
   }
+  c.appendChild(stDiv);
   document.getElementById("avAddBtn").addEventListener("click",openAvailAddModal);
   document.getElementById("avWikiSync").addEventListener("click",syncAvailFromWiki);
   if(availKeys.length)document.getElementById("avClearAll").addEventListener("click",function(){S.avail={};saveS();renderAll();});
@@ -2388,56 +2448,61 @@ function renderAvailable(){
     var emp=document.createElement("div");
     emp.style.cssText="background:var(--bg2);border:1px solid var(--brd);border-radius:11px;padding:40px;text-align:center;color:var(--tx3)";
     emp.innerHTML='<div style="font-size:14px;font-weight:600;color:var(--tx2);margin-bottom:6px">No monsters marked yet</div>'+
-      '<div style="font-size:12px">Click <strong style="color:var(--acc2)">＋ Add Monster</strong> to search and mark monsters that are currently available.</div>';
+      '<div style="font-size:12px">Click <strong style="color:var(--acc2)">↻ Sync from Wiki</strong> to import currently available monsters, or <strong style="color:var(--acc2)">＋ Add Monster</strong> to add manually.</div>';
     c.appendChild(emp);
     return;
   }
 
-  var grid=document.createElement("div");grid.className="mgrid";
+  // Group entries by wiki category
+  var catOrder=S.wikiCategories||[];
+  var grouped={},manualKeys=[];
+  availKeys.forEach(function(k){
+    var e=S.avail[k];
+    if(e&&e.wiki&&e.category){
+      if(!grouped[e.category])grouped[e.category]=[];
+      grouped[e.category].push(k);
+    } else {
+      manualKeys.push(k);
+    }
+  });
 
-  availKeys.forEach(function(key){
+  function sortKeys(keys){
+    return keys.sort(function(a,b){
+      var ua=S.avail[a]&&S.avail[a].until,ub=S.avail[b]&&S.avail[b].until;
+      if(ua&&ub)return ua-ub;if(ua)return -1;if(ub)return 1;
+      return a.localeCompare(b);
+    });
+  }
+
+  function buildCard(key){
     var m=DB.monsters.find(function(x){return x.n+" ("+x.r+")"===key;});
-    if(!m)return;
+    if(!m)return null;
     var r=rar(m.n);
-
-    // Build per-island combo + time entries
     var comboHtml="";
     if(m.islands&&m.islands.length){
       var entries=[];
       m.islands.forEach(function(a){
-        if(a.combo&&a.combo.length){
-          var t=a.time?(a.enhanced?a.time+" / "+a.enhanced:a.time):"";
-          entries.push({island:a.island,combo:a.combo.join(" + "),time:t});
-        } else if(a.obtain){
-          entries.push({island:a.island,combo:a.obtain,time:""});
-        }
+        if(a.combo&&a.combo.length){var t=a.time?(a.enhanced?a.time+" / "+a.enhanced:a.time):"";entries.push({island:a.island,combo:a.combo.join(" + "),time:t});}
+        else if(a.obtain)entries.push({island:a.island,combo:a.obtain,time:""});
       });
       if(entries.length){
         comboHtml='<div style="margin-bottom:6px;border-top:1px solid var(--brd);padding-top:6px">';
         entries.forEach(function(e){
-          comboHtml+=
-            '<div style="margin-bottom:4px">'+
-              '<div style="font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:.4px">'+e.island+'</div>'+
-              '<div style="font-size:10px;color:var(--tx2);line-height:1.4">'+e.combo+
-                (e.time?'<span style="color:var(--tx3)"> · '+e.time+'</span>':'')+
-              '</div>'+
-            '</div>';
+          comboHtml+='<div style="margin-bottom:4px">'+
+            '<div style="font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:.4px">'+e.island+'</div>'+
+            '<div style="font-size:10px;color:var(--tx2);line-height:1.4">'+e.combo+(e.time?'<span style="color:var(--tx3)"> · '+e.time+'</span>':'')+
+            '</div></div>';
         });
         comboHtml+='</div>';
       }
     }
-
     var card=document.createElement("div");
     card.className="mc owned";
     var firstIsl=(m.i&&m.i[0])||"";
     card.innerHTML=
-      '<div class="mc-top">'+
-        monImgWithCtx(m.n,firstIsl,42)+
-        '<div class="mc-info">'+
-          '<div class="mc-name">'+m.n+'</div>'+
-          '<div class="mc-badges"><span class="bdg bdg-'+r+'">'+m.r+'</span>'+
-          (S.avail[key]&&S.avail[key].wiki?'<span class="bdg" style="background:rgba(88,166,255,.15);color:#58a6ff;border:1px solid rgba(88,166,255,.3)">Wiki</span>':'')+
-          '</div>'+
+      '<div class="mc-top">'+monImgWithCtx(m.n,firstIsl,42)+
+        '<div class="mc-info"><div class="mc-name">'+m.n+'</div>'+
+          '<div class="mc-badges"><span class="bdg bdg-'+r+'">'+m.r+'</span></div>'+
         '</div>'+
       '</div>'+
       comboHtml+
@@ -2446,13 +2511,30 @@ function renderAvailable(){
         '<button class="btn-sm" style="flex:1;font-size:10px" data-avkey="'+key+'" data-avaction="edit">Edit</button>'+
         '<button class="btn-sm btn-danger" style="font-size:10px" data-avkey="'+key+'" data-avaction="remove">✕</button>'+
       '</div>';
-
     card.querySelector('[data-avaction="edit"]').addEventListener("click",function(e){e.stopPropagation();openAvailModal(key);});
     card.querySelector('[data-avaction="remove"]').addEventListener("click",function(e){e.stopPropagation();removeAvail(key);});
-    grid.appendChild(card);
-  });
+    return card;
+  }
 
-  c.appendChild(grid);
+  function renderGroup(title,keys){
+    if(!keys||!keys.length)return;
+    var sh=document.createElement("div");
+    sh.style.cssText="margin:18px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--brd);display:flex;align-items:baseline;gap:8px";
+    sh.innerHTML='<span style="font-size:13px;font-weight:700;color:var(--tx)">'+title+'</span>'+
+      '<span style="font-size:11px;color:var(--tx3)">'+keys.length+'</span>';
+    c.appendChild(sh);
+    var grid=document.createElement("div");grid.className="mgrid";
+    sortKeys(keys).forEach(function(key){var card=buildCard(key);if(card)grid.appendChild(card);});
+    c.appendChild(grid);
+  }
+
+  // Render wiki categories in the order they appeared on the wiki page
+  var shown={};
+  catOrder.forEach(function(cn){if(grouped[cn]){renderGroup(cn,grouped[cn]);shown[cn]=true;}});
+  // Any categories not in the stored order (shouldn't happen but be safe)
+  Object.keys(grouped).forEach(function(cn){if(!shown[cn])renderGroup(cn,grouped[cn]);});
+  // Manual entries at the bottom
+  if(manualKeys.length)renderGroup("Manually Added",manualKeys);
 }
 
 // ISLANDS
