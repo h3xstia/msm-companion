@@ -989,6 +989,11 @@ var WUBBOX_ISLANDS={"Plant Island":"Plant","Cold Island":"Cold","Air Island":"Ai
   "Mirror Earth Island":"Earth"};
 function monImgSrc(name,islandCtx){
   var r=rar(name);
+  // If name has no rarity prefix, check DB for actual rarity (e.g. Vitreous Ti, King Do)
+  if(r==="C"&&DB&&DB.monsters){
+    var _dbm=DB.monsters.find(function(m){return m.n===name;});
+    if(_dbm){if(_dbm.r==="Rare")r="R";else if(_dbm.r==="Epic")r="E";}
+  }
   // Strip 'Rare '/'Epic '/'Adult ' prefix before building base name
   var base=cleanN(name).replace(/^(Rare|Epic|Adult)\s+/i,"").replace(/'/g,"_");
   var lbase=base.toLowerCase();
@@ -2793,8 +2798,19 @@ function renderBreedSim(){
         var otherMon=null;
         if(otherKey&&S[otherKey])DB.monsters.forEach(function(m){if(m.n===S[otherKey])otherMon=m;});
         var hits=[];
+        var _FIRE_EXP={"Bisonorus":1,"Yelmut":1,"Flum Ox":1,"Krillby":1,"Edamimi":1,"PongPing":1,"Incisaur":1,"Tiawa":1,"Candelavra":1,"Drummidary":1,"Bowhead":1,"Tuskski":1,"Gnarls":1};
         DB.monsters.forEach(function(m){
           if(m.r!=="Common"&&m.r!=="Rare")return;
+          if(m.c==="Supernatural")return;
+          if(m.c==="Primordial")return;
+          if(m.c==="Titansoul")return;
+          if(m.c==="Dipster")return;
+          if(m.n==="Mimic")return;
+          if(m.c==="Legendary"&&m.n!=="Shugabush")return;
+          if(m.c==="Ethereal"&&(m.e||[]).length>=3)return;
+          if(m.c==="Paironormal"&&m.islands&&m.islands.every(function(i){return i.island==="Minor Paironormal Carnival";}))return;
+          var me=m.e||[];if(me.indexOf("Dream")>-1&&me.indexOf("Mythical")>-1)return;
+          if(_FIRE_EXP[m.n])return;
           if(q&&m.n.toLowerCase().indexOf(q)===-1)return;
           if(otherMon&&!_sharesIsland(otherMon,m))return;
           hits.push(m);
