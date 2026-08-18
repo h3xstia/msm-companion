@@ -31,7 +31,7 @@
 // Add an entry to zapTargets with: n, island, limit, requirements[].
 // Each requirement: { monster: "Name", eggs: N }
 //
-// RARITIES:  "Common" | "Rare" | "Epic" | "Legendary" | "Young" | "Adult" | "Tonal" | "Elemental" | "Royal" | "Astral"
+// RARITIES:  "Common" | "Rare" | "Epic" | "Legendary" | "Young" | "Adult"
 // CLASSES:   "Natural" | "Fire" | "Magical" | "Ethereal" | "Paironormal"
 //            "Primordial" | "Supernatural" | "Legendary" | "Seasonal"
 //            "Mythical" | "Celestial" | "Dipster" | "Titansoul"
@@ -6454,7 +6454,7 @@ window.DB = {
   },
   {
     "n": "Do",
-    "r": "Tonal",
+    "r": "Common",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6484,7 +6484,7 @@ window.DB = {
   },
   {
     "n": "Re",
-    "r": "Tonal",
+    "r": "Common",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6514,7 +6514,7 @@ window.DB = {
   },
   {
     "n": "Mi",
-    "r": "Tonal",
+    "r": "Common",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6544,7 +6544,7 @@ window.DB = {
   },
   {
     "n": "Fa",
-    "r": "Tonal",
+    "r": "Common",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6574,7 +6574,7 @@ window.DB = {
   },
   {
     "n": "Sol",
-    "r": "Tonal",
+    "r": "Common",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6604,7 +6604,7 @@ window.DB = {
   },
   {
     "n": "La",
-    "r": "Tonal",
+    "r": "Common",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6634,7 +6634,7 @@ window.DB = {
   },
   {
     "n": "Ti",
-    "r": "Tonal",
+    "r": "Common",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6664,7 +6664,7 @@ window.DB = {
   },
   {
     "n": "Vitreous Ti",
-    "r": "Elemental",
+    "r": "Rare",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6694,7 +6694,7 @@ window.DB = {
   },
   {
     "n": "King Do",
-    "r": "Royal",
+    "r": "Epic",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
@@ -6724,7 +6724,7 @@ window.DB = {
   },
   {
     "n": "Superno-Fa",
-    "r": "Astral",
+    "r": "Common",
     "c": "Dipster",
     "e": ["Dipster"],
     "islands": [
