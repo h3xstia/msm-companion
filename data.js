@@ -570,6 +570,7 @@ window.DB = {
       { "island": "Air Island", "combo": ["Noggin", "Mammott"], "time": "30m", "enhanced": "22m 30s" },
       { "island": "Earth Island", "combo": ["Noggin", "Mammott"], "time": "30m", "enhanced": "22m 30s" },
       { "island": "Faerie Island", "combo": ["Noggin", "Mammott"], "time": "30m", "enhanced": "22m 30s" },
+      { "island": "bbli$zard Island", "combo": ["Drumpler", "bbli$zard"], "obtain": "Teleport", "time": "30m", "enhanced": "22m 30s" },
       { "island": "Colossingum", "combo": null, "obtain": "Teleport" },
       { "island": "Gold Island", "combo": null, "obtain": "Teleport" },
       { "island": "Mirror Plant Island", "combo": ["Noggin", "Mammott"], "time": "30m", "enhanced": "22m 30s" },
@@ -4383,6 +4384,16 @@ window.DB = {
     ]
   },
   {
+    "n": "Rare Pentumbra",
+    "r": "Rare",
+    "c": "Ethereal",
+    "e": ["Plasma", "Shadow", "Crystal", "Poison"],
+    "islands": [
+      { "island": "Ethereal Workshop", "combo": ["Tuned Up Plasma (Rare)", "Tuned Up Shadow (Rare)", "Tuned Up Crystal (Rare)", "Tuned Up Poison (Rare)"], "obtain": "Synthesis" },
+      { "island": "Shadow Islet", "combo": null, "obtain": "Harmonizing", "time": "1d 21h" }
+    ]
+  },
+  {
     "n": "BeMeebEth",
     "r": "Common",
     "c": "Ethereal",
@@ -4478,6 +4489,15 @@ window.DB = {
     "e": ["Hoax", "Depths"],
     "islands": [
       { "island": "Major Paironormal Carnival", "combo": ["Owlesque (Major)", "Shhimmer (Major)"], "time": "1d 21h", "enhanced": "1d 9h 45m" }
+    ]
+  },
+  {
+    "n": "Vawk (Major)",
+    "r": "Common",
+    "c": "Paironormal",
+    "e": ["Ruin", "Depths"],
+    "islands": [
+      { "island": "Major Paironormal Carnival", "combo": ["Arcorina (Major)", "Shhimmer (Major)"], "time": "1d 21h", "enhanced": "1d 9h 45m" }
     ]
   },
   {
@@ -4595,6 +4615,15 @@ window.DB = {
     "e": ["Hoax", "Depths"],
     "islands": [
       { "island": "Minor Paironormal Carnival", "combo": ["The Inflatterer (Major)"], "obtain": "Fuging", "time": "1d 21h", "enhanced": "22h" }
+    ]
+  },
+  {
+    "n": "Vawk (Minor)",
+    "r": "Common",
+    "c": "Paironormal",
+    "e": ["Ruin", "Depths"],
+    "islands": [
+      { "island": "Minor Paironormal Carnival", "combo": ["Vawk (Major)"], "obtain": "Fuging", "time": "1d 21h", "enhanced": "22h" }
     ]
   },
   {
@@ -5371,6 +5400,15 @@ window.DB = {
     ]
   },
   {
+    "n": "bbdek$tr",
+    "r": "Common",
+    "c": "Legendary",
+    "e": ["Legendary"],
+    "islands": [
+      { "island": "bbli$zard Island", "combo": ["bbli$zard", "Drumpler"], "obtain": "Teleport", "time": "1d 11h", "enhanced": "1d 2h 15m" }
+    ]
+  },
+  {
     "n": "Alcordion",
     "r": "Common",
     "c": "Legendary",
@@ -5908,7 +5946,7 @@ window.DB = {
     "c": "Mythical",
     "e": ["Dream"],
     "islands": [
-      { "island": "Mythical Island", "combo": ["Cataliszt", "Cataliszt"], "obtain": "Teleport", "time": "9h", "enhanced": "6h 45m" }
+      { "island": "Mythical Island", "combo": ["Cataliszt", "Any Single Mythical"], "obtain": "Teleport", "time": "9h", "enhanced": "6h 45m" }
     ]
   },
   {
@@ -6068,6 +6106,15 @@ window.DB = {
     "islands": [
       { "island": "Fire Oasis", "combo": ["Congle", "Woolabee"], "time": "18h", "enhanced": "13h 30m" },
       { "island": "Mythical Island", "combo": ["Cataliszt", "Cherubble"], "obtain": "Teleport", "time": "22h 30m", "enhanced": "16h 52m 30s", "failed_attempt": true }
+    ]
+  },
+  {
+    "n": "Epic Cataliszt",
+    "r": "Epic",
+    "c": "Mythical",
+    "e": ["Mythical"],
+    "islands": [
+      { "island": "Mythical Island", "combo": ["Cataliszt", "Any Single Mythical"], "obtain": "Teleport", "time": "1d 19h 36m", "enhanced": "1d 8h 42m" }
     ]
   },
   {
